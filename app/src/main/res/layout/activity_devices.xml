@@ -6,11 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".DevicesActivity">
 
-    <TextView
-        android:id="@+id/textView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <Button
+        android:id="@+id/button_add_device"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="200dp"
-        tools:layout_editor_absoluteY="399dp" />
+        android:layout_marginBottom="50px"
+        android:background="@drawable/button_background"
+        android:onClick="openDeviceDialog"
+        android:text="Add Device"
+        android:paddingLeft="50sp"
+        android:paddingRight="50sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
