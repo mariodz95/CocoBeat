@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 
-class DevicesAdapter(private val deviceList: ArrayList<DeviceViewModel>) : RecyclerView.Adapter<DevicesAdapter.ViewHolder>() {
+class DevicesAdapter(private val deviceList: ArrayList<DeviceDataModel>) : RecyclerView.Adapter<DevicesAdapter.ViewHolder>() {
 
     //this method is returning the view for each item in the list
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -32,7 +32,7 @@ class DevicesAdapter(private val deviceList: ArrayList<DeviceViewModel>) : Recyc
         val textView1: TextView = itemView.findViewById(R.id.device_name)
         val textView2: TextView = itemView.findViewById(R.id.device_sync_date)
 
-        fun bindItems(device: DeviceViewModel) {
+        fun bindItems(device: DeviceDataModel) {
             imageView.setImageResource((device.imageResource))
             textView1.text = device.deviceName
             textView2.text = device.deviceSyncData

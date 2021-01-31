@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 
 class DeviceListDialogFragment : DialogFragment() {
-    private val deviceList = ArrayList<DeviceViewModel>()
+    private val deviceList = ArrayList<DeviceDataModel>()
     private lateinit var devicesAdapter: DevicesAdapter
 
     override  fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, saveInstanceState: Bundle?
@@ -21,7 +21,7 @@ class DeviceListDialogFragment : DialogFragment() {
         val recyclerView: RecyclerView = rootView.findViewById(R.id.recycler_view_dialog)
         recyclerView.layoutManager = LinearLayoutManager(this.context)
         for(i in 0..1){
-            deviceList.add(  DeviceViewModel(R.drawable.ic_launcher_background,"Device dialog", null))
+            deviceList.add(  DeviceDataModel(R.drawable.ic_launcher_background,"Device dialog", null))
         }
         recyclerView.adapter = DevicesAdapter(deviceList)
 
@@ -33,7 +33,6 @@ class DeviceListDialogFragment : DialogFragment() {
 
         return rootView
     }
-
 
     override fun onResume() {
         super.onResume()
