@@ -13,15 +13,16 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val model: DateViewModel by viewModels()
-
+    lateinit var textViewDate: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        getSupportActionBar()?.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar()?.setCustomView(R.layout.toolbar_title_layout);
+        supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM;
+        supportActionBar?.setCustomView(R.layout.toolbar_title_layout);
 
+        textViewDate = findViewById(R.id.text_view_date)
         displayDate()
     }
 
@@ -31,7 +32,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun displayDate(){
-        val textViewDate: TextView = findViewById(R.id.text_view_date) as TextView
         var monthDisplay = model.getMonth()
         var yearDisplay = model.getYear()
         textViewDate.text = ("$monthDisplay $yearDisplay")
@@ -39,14 +39,12 @@ class MainActivity : AppCompatActivity() {
 
 
     fun getNextMonth(view: View){
-        val textViewDate: TextView = findViewById(R.id.text_view_date) as TextView
         var newMonthDate = model.getNextMonth()
         var newMonthYear = model.getYear()
         textViewDate.text = ("$newMonthDate $newMonthYear")
     }
 
     fun getPrevMonth(view: View){
-        val textViewDate: TextView = findViewById(R.id.text_view_date) as TextView
         var newMonthDate = model.getPrevMonth()
         var newMonthYear = model.getYear()
         textViewDate.text = ("$newMonthDate $newMonthYear")
