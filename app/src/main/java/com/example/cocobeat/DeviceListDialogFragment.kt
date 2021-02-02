@@ -1,14 +1,12 @@
 package com.example.cocobeat
 
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,23 +20,31 @@ import com.ablelib.models.AbleUUID
 import com.ablelib.storage.AbleDeviceStorage
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
+private val UUID_DEVICE_INFORMATION_SERVICE  = AbleUUID(UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"))
+private val UUID_DEVICE_SERIAL_NUMBER_CHARACTERISTIC  = AbleUUID(UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"))
 
 class DeviceListDialogFragment : DialogFragment(), DevicesAdapter.OnItemClickListener {
     private val deviceList = ArrayList<DeviceDataModel>()
     private lateinit var devicesAdapter: DevicesAdapter
 
-    override  fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, saveInstanceState: Bundle?
+    override  fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, saveInstanceState: Bundle?
     ): View? {
-        var rootView: View = inflater.inflate (R.layout.activity_device_dialog, container, false)
+        var rootView: View = inflater.inflate(R.layout.activity_device_dialog, container, false)
         val recyclerView: RecyclerView = rootView.findViewById(R.id.recycler_view_dialog)
         recyclerView.layoutManager = LinearLayoutManager(this.context)
 
-        deviceList.add(  DeviceDataModel(R.drawable.ic_launcher_background,"Movesense Wearable", null))
-        deviceList.add(  DeviceDataModel(R.drawable.ic_launcher_background,"Accu-Chek", null))
+        deviceList.add(
+            DeviceDataModel(
+                R.drawable.ic_launcher_background,
+                "Movesense Wearable",
+                null
+            )
+        )
+        deviceList.add(DeviceDataModel(R.drawable.ic_launcher_background, "Accu-Chek", null))
 
         recyclerView.adapter = DevicesAdapter(deviceList, this)
 
@@ -62,58 +68,84 @@ class DeviceListDialogFragment : DialogFragment(), DevicesAdapter.OnItemClickLis
     override fun onItemClick(position: Int) {
         val clickedItem = deviceList[position]
         GlobalScope.async  {
-            scanForNearbyDevices()
+            scanForNearbyDevices(clickedItem.deviceName)
         }
-
     }
 
-    suspend fun scanForNearbyDevices() {
+    suspend fun scanForNearbyDevices(deviceName: String) {
         val value = GlobalScope.async {
             try {
                 val devices = AbleManager.shared.scan()
                 for (device in devices) {
-                    AbleDeviceStorage.default.add(AbleDevice(device.name, true, true, true, device.address))
+                    AbleDeviceStorage.default.add(
+                        AbleDevice(
+                            device.name,
+                            true,
+                            true,
+                            true,
+                            device.address
+                        )
+                    )
                 }
             } catch (e: BluetoothStateException) {
                 // handle the exception
             }
         }
         value.await()
-        pairWithDevice()
+        pairWithDevice(deviceName)
+        val myDevice = AbleDeviceStorage.default.findByName(deviceName)
+        Log.v("test", "myDevice $myDevice")
+/*
+        val comm = myDevice.comm
+*/
+/*
+        Log.v("test", "comm $comm")
+        val connect = comm.connect()
+        Log.v("test", "connect $connect")
+        val UUID =  AbleUUID(UUID.randomUUID().toString())
 
-        val myDevice = AbleDeviceStorage.default.findByName("Accu-Chek")
-        Log.v("test", myDevice.toString())
+        try {
+            val characteristic = comm.discoverServices().first { service -> service.uuid == UUID_DEVICE_INFORMATION_SERVICE }
 
-        val comm = myDevice.asyncComm.onConnectionStateChanged { newState, status ->
-                    // respond to connection state changes - connections, disconnects, etc
-                     Log.v("test", status.toString())
-                }
-                .onServicesDiscovered { services ->
-                    // here's where the services will appear once you trigger discoverServices
-                    Log.v("test", "onServicesDiscovered $services")
-                }
-                .onCharacteristicRead { characteristic ->
-                    // called after comm.readCharacteristic
-                    Log.v("test", "                .onCharacteristicRead { characteristic ->\n")
-                }
-                .onCharacteristicChanged { characteristic ->
-                    // called when a characteristic for which setNotifyValue was called changes its value
-                    Log.v("test", "onCharacteristicChanged")
-                }
-                .onDescriptorRead { descriptor ->
-                    // called after comm.readDescriptor
-                    Log.v("test", "onDescriptorRead")
-                }
-                .onError { error ->
-                    Log.v("test", "Error")
 
-                }
-                .connect()
+        }catch (e: java.lang.Exception){
+            Log.v("test", "characteristic error $e")
+        }
+*/
 
+
+
+            val comm = myDevice.asyncComm.onConnectionStateChanged { newState, status ->
+                        // respond to connection state changes - connections, disconnects, etc
+                         Log.v("test", status.toString())
+                    }
+                    .onServicesDiscovered { services ->
+                        // here's where the services will appear once you trigger discoverServices
+                        Log.v("test", "onServicesDiscovered $services")
+                    }
+                    .onCharacteristicRead { characteristic ->
+                        // called after comm.readCharacteristic
+                        Log.v("test", "onCharacteristicRead $characteristic")
+                    }
+                    .onCharacteristicChanged { characteristic ->
+                        // called when a characteristic for which setNotifyValue was called changes its value
+                        Log.v("test", "onCharacteristicChanged")
+                        val test = characteristic.value
+                        Log.v("test", "onCharacteristicChanged test $test")
+                    }
+                    .onDescriptorRead { descriptor ->
+                        // called after comm.readDescriptor
+                        Log.v("test", "onDescriptorRead")
+                    }
+                    .onError { error ->
+                        Log.v("test", "Error")
+
+                    }
+                    .connect()
     }
 
-    suspend fun pairWithDevice() {
-        val myDevice = AbleDeviceStorage.default.findByName("Accu-Chek")
+    suspend fun pairWithDevice(deviceName: String) {
+        val myDevice = AbleDeviceStorage.default.findByName(deviceName)
         try {
             val pairedDevice = myDevice.pair()
         } catch (e: Exception) {
