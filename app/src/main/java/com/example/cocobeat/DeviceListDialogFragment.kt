@@ -18,24 +18,28 @@ import com.ablelib.manager.pair
 import com.ablelib.models.AbleDevice
 import com.ablelib.models.AbleUUID
 import com.ablelib.storage.AbleDeviceStorage
+import com.example.cocobeat.databinding.ActivityDeviceDialogBinding
+import com.example.cocobeat.databinding.ActivityDevicesBinding
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import java.util.*
 import kotlin.collections.ArrayList
 
 private val UUID_DEVICE_INFORMATION_SERVICE  = AbleUUID(UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"))
-private val UUID_DEVICE_SERIAL_NUMBER_CHARACTERISTIC  = AbleUUID(UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"))
+private val UUID_DEVICE_SERIAL_NUMBER_CHARACTERISTIC  = AbleUUID(UUID.fromString("0x100001-0000-1000-8000-00805f9b34fb"))
 
 class DeviceListDialogFragment : DialogFragment(), DevicesAdapter.OnItemClickListener {
     private val deviceList = ArrayList<DeviceDataModel>()
-    private lateinit var devicesAdapter: DevicesAdapter
+    private var _binding: ActivityDeviceDialogBinding? = null
+    private val binding get() = _binding!!
+
 
     override  fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, saveInstanceState: Bundle?
     ): View? {
-        var rootView: View = inflater.inflate(R.layout.activity_device_dialog, container, false)
-        val recyclerView: RecyclerView = rootView.findViewById(R.id.recycler_view_dialog)
-        recyclerView.layoutManager = LinearLayoutManager(this.context)
+        _binding = ActivityDeviceDialogBinding.inflate(inflater, container, false)
+        val view = binding.root
+        binding.recyclerViewDialog.layoutManager = LinearLayoutManager(this.context)
 
         deviceList.add(
             DeviceDataModel(
@@ -46,15 +50,18 @@ class DeviceListDialogFragment : DialogFragment(), DevicesAdapter.OnItemClickLis
         )
         deviceList.add(DeviceDataModel(R.drawable.ic_launcher_background, "Accu-Chek", null))
 
-        recyclerView.adapter = DevicesAdapter(deviceList, this)
+        binding.recyclerViewDialog.adapter = DevicesAdapter(deviceList, this)
 
-        val button: Button = rootView.findViewById(R.id.button_cancel)
-
-        button.setOnClickListener{
+        binding.buttonCancel.setOnClickListener{
             dialog?.dismiss()
         }
 
-        return rootView
+        return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onResume() {
@@ -130,8 +137,7 @@ class DeviceListDialogFragment : DialogFragment(), DevicesAdapter.OnItemClickLis
                     .onCharacteristicChanged { characteristic ->
                         // called when a characteristic for which setNotifyValue was called changes its value
                         Log.v("test", "onCharacteristicChanged")
-                        val test = characteristic.value
-                        Log.v("test", "onCharacteristicChanged test $test")
+                        Log.v("test", "onCharacteristicChanged test $characteristic")
                     }
                     .onDescriptorRead { descriptor ->
                         // called after comm.readDescriptor

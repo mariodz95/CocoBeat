@@ -3,27 +3,34 @@ package com.example.cocobeat
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import com.example.cocobeat.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
-    private val model: DateViewModel by viewModels()
-    lateinit var textViewDate: TextView
+
+class MainActivity : AppCompatActivity(), View.OnClickListener {
+    private val model: MainActivityViewModel by viewModels()
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        supportActionBar?.displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM;
-        supportActionBar?.setCustomView(R.layout.toolbar_title_layout);
+        supportActionBar?.apply {
+            displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
+            setCustomView(R.layout.toolbar_title_layout)
+        }
 
-        textViewDate = findViewById(R.id.text_view_date)
         displayDate()
+
+        binding.imgArrowBack.setOnClickListener(this)
+        binding.imgArrowNext.setOnClickListener(this)
+        binding.btnDevices.setOnClickListener(this)
     }
 
-    fun openDevicesActivity(view: View) {
+    private fun openDevicesActivity() {
         val intent = Intent(this, DevicesActivity::class.java)
         startActivity(intent)
     }
@@ -31,19 +38,27 @@ class MainActivity : AppCompatActivity() {
     private fun displayDate(){
         var monthDisplay = model.getMonth()
         var yearDisplay = model.getYear()
-        textViewDate.text = ("$monthDisplay $yearDisplay")
+        binding.textViewDate.text = ("$monthDisplay $yearDisplay")
     }
 
 
-    fun getNextMonth(view: View){
+    private fun getNextMonth(){
         var newMonthDate = model.getNextMonth()
         var newMonthYear = model.getYear()
-        textViewDate.text = ("$newMonthDate $newMonthYear")
+        binding.textViewDate.text = ("$newMonthDate $newMonthYear")
     }
 
-    fun getPrevMonth(view: View){
+    private fun getPrevMonth(){
         var newMonthDate = model.getPrevMonth()
         var newMonthYear = model.getYear()
-        textViewDate.text = ("$newMonthDate $newMonthYear")
+        binding.textViewDate.text = ("$newMonthDate $newMonthYear")
+    }
+
+    override fun onClick(v: View?) {
+        when(v?.id) {
+            R.id.img_arrow_back -> getPrevMonth()
+            R.id.img_arrow_next -> getNextMonth()
+            R.id.btn_devices -> openDevicesActivity()
+        }
     }
 }

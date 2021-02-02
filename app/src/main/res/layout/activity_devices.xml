@@ -17,7 +17,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="50px"
         android:background="@drawable/button_background"
-        android:onClick="openDeviceDialog"
         android:text="Add Device"
         android:paddingLeft="50sp"
         android:paddingRight="50sp"
