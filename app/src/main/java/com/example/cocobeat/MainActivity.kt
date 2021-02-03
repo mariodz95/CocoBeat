@@ -2,6 +2,7 @@ package com.example.cocobeat
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBar
@@ -22,12 +23,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
             setCustomView(R.layout.toolbar_title_layout)
         }
-
-        displayDate()
-
-        binding.imgArrowBack.setOnClickListener(this)
-        binding.imgArrowNext.setOnClickListener(this)
-        binding.btnDevices.setOnClickListener(this)
     }
 
     private fun openDevicesActivity() {
@@ -35,30 +30,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         startActivity(intent)
     }
 
-    private fun displayDate(){
-        var monthDisplay = model.getMonth()
-        var yearDisplay = model.getYear()
-        binding.textViewDate.text = ("$monthDisplay $yearDisplay")
-    }
-
-
-    private fun getNextMonth(){
-        var newMonthDate = model.getNextMonth()
-        var newMonthYear = model.getYear()
-        binding.textViewDate.text = ("$newMonthDate $newMonthYear")
-    }
-
-    private fun getPrevMonth(){
-        var newMonthDate = model.getPrevMonth()
-        var newMonthYear = model.getYear()
-        binding.textViewDate.text = ("$newMonthDate $newMonthYear")
-    }
-
     override fun onClick(v: View?) {
-        when(v?.id) {
+/*        when(v?.id) {
             R.id.img_arrow_back -> getPrevMonth()
             R.id.img_arrow_next -> getNextMonth()
             R.id.btn_devices -> openDevicesActivity()
-        }
+        }*/
     }
 }

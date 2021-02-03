@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/hiddenTab"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp">
+
+    <ImageButton
+        android:id="@+id/img_arrow_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_baseline_arrow_back_ios_new_24_blue"
+        android:cropToPadding="false"
+        android:layout_marginRight="10dp" />
+
+    <TextView
+        android:id="@+id/text_view_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/holo_orange_dark" />
+
+    <ImageButton
+        android:id="@+id/img_arrow_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_baseline_arrow_forward_ios_24_blue"
+        android:cropToPadding="false"
+        android:layout_marginLeft="10dp" />
+</LinearLayout>
