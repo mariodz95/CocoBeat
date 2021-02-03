@@ -36,16 +36,15 @@ class MonthPicker @JvmOverloads constructor(
         orientation = VERTICAL
     }
 
-    fun getMonthForInt(num: Int): String? {
+    private fun getMonthForInt(num: Int): String? {
         var month = "error"
         val dfs = DateFormatSymbols()
         val months: Array<String> = dfs.getMonths()
-        if (num >= 0 && num <= 11) {
+        if (num in 0..11) {
             month = months[num]
         }
         return month
     }
-
 
     override fun onSaveInstanceState(): Parcelable? {
         val bundle = Bundle()
@@ -75,7 +74,7 @@ class MonthPicker @JvmOverloads constructor(
         binding.textViewDate.text = ("$monthName $year")
     }
 
-    fun getNextMonth() {
+    private fun getNextMonth() {
         calendar.add(Calendar.MONTH, 1);
         monthNumber += 1
         if(monthNumber > 11)
@@ -87,7 +86,7 @@ class MonthPicker @JvmOverloads constructor(
         displayDate()
     }
 
-    fun getPrevMonth(){
+    private fun getPrevMonth(){
         calendar.add(Calendar.MONTH, -1);
         monthNumber -= 1
         if(monthNumber < 0)

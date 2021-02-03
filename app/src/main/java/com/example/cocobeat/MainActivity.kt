@@ -2,15 +2,13 @@ package com.example.cocobeat
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import com.example.cocobeat.databinding.ActivityMainBinding
 
 
-class MainActivity : AppCompatActivity(), View.OnClickListener {
+class MainActivity : AppCompatActivity(){
     private val model: MainActivityViewModel by viewModels()
     private lateinit var binding: ActivityMainBinding
 
@@ -23,18 +21,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
             setCustomView(R.layout.toolbar_title_layout)
         }
+
+        binding.btnDevices.setOnClickListener{
+            openDevicesActivity()
+        }
     }
 
     private fun openDevicesActivity() {
         val intent = Intent(this, DevicesActivity::class.java)
         startActivity(intent)
-    }
-
-    override fun onClick(v: View?) {
-/*        when(v?.id) {
-            R.id.img_arrow_back -> getPrevMonth()
-            R.id.img_arrow_next -> getNextMonth()
-            R.id.btn_devices -> openDevicesActivity()
-        }*/
     }
 }
