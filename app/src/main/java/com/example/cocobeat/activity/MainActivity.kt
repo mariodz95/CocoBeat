@@ -1,11 +1,13 @@
-package com.example.cocobeat
+package com.example.cocobeat.activity
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
+import com.example.cocobeat.R
 import com.example.cocobeat.databinding.ActivityMainBinding
+import com.example.cocobeat.model.MainActivityViewModel
 
 
 class MainActivity : AppCompatActivity(){

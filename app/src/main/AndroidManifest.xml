@@ -21,14 +21,14 @@
             android:name="com.ablelib.LICENCE_KEY"
             android:value="d062d6e6-5833-445d-a2bd-11820170cb53" />
         <activity
-            android:name=".DevicesActivity"
+            android:name=".activity.DevicesActivity"
             android:label="@string/title_activity_devices"
            >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

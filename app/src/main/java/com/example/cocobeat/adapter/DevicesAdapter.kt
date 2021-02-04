@@ -1,15 +1,16 @@
-package com.example.cocobeat
+package com.example.cocobeat.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.cocobeat.model.DeviceDataModel
 import com.example.cocobeat.databinding.DeviceRowItemBinding
 
 
 class DevicesAdapter(
     private val deviceList: ArrayList<DeviceDataModel>,
-    private val listener:  OnItemClickListener
+    private val listener: OnItemClickListener
 ) : RecyclerView.Adapter<DevicesAdapter.ViewHolder>() {
 
     private var _binding: DeviceRowItemBinding? = null

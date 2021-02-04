@@ -1,4 +1,4 @@
-package com.example.cocobeat
+package com.example.cocobeat.model
 
 import androidx.lifecycle.ViewModel
 import java.text.SimpleDateFormat

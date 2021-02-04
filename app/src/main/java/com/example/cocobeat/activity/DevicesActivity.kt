@@ -1,4 +1,4 @@
-package com.example.cocobeat
+package com.example.cocobeat.activity
 
 import android.content.Intent
 import android.location.LocationManager
@@ -12,7 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ablelib.manager.AbleManager
 import com.ablelib.util.AbleLogOptions
 import com.ablelib.util.turnBluetoothOnIfOff
+import com.example.cocobeat.model.DeviceDataModel
+import com.example.cocobeat.R
+import com.example.cocobeat.adapter.DevicesAdapter
 import com.example.cocobeat.databinding.ActivityDevicesBinding
+import com.example.cocobeat.fragment.DeviceListDialogFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

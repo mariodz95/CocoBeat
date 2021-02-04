@@ -1,4 +1,4 @@
-package com.example.cocobeat
+package com.example.cocobeat.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -6,20 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Button
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.ablelib.comm.asyncComm
-import com.ablelib.comm.comm
 import com.ablelib.exceptions.BluetoothStateException
 import com.ablelib.manager.AbleManager
 import com.ablelib.manager.pair
 import com.ablelib.models.AbleDevice
 import com.ablelib.models.AbleUUID
 import com.ablelib.storage.AbleDeviceStorage
+import com.example.cocobeat.model.DeviceDataModel
+import com.example.cocobeat.R
+import com.example.cocobeat.adapter.DevicesAdapter
 import com.example.cocobeat.databinding.ActivityDeviceDialogBinding
-import com.example.cocobeat.databinding.ActivityDevicesBinding
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import java.util.*

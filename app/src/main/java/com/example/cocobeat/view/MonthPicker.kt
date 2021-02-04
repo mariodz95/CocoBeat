@@ -1,4 +1,4 @@
-package com.example.cocobeat
+package com.example.cocobeat.view
 
 import android.content.Context
 import android.os.Bundle
