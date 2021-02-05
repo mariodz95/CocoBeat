@@ -1,6 +1,5 @@
 package com.example.cocobeat.repository
 
-
 import android.util.Log
 import com.ablelib.comm.comm
 import com.ablelib.exceptions.BluetoothStateException
@@ -70,6 +69,10 @@ class BluetoothService {
             val characteristicDateTime = comm.discoverServices().first { service -> service.uuid == AbleUUID("00001808-0000-1000-8000-00805f9b34fb") }
                     .getCharacteristic(AbleUUID("00002a08-0000-1000-8000-00805f9b34fb"))
             val dateTimeBytes= comm.readCharacteristic(characteristicDateTime).value
+
+            val glucose = comm.discoverServices().first { service -> service.uuid == AbleUUID("00001808-0000-1000-8000-00805f9b34fb") }
+                    .getCharacteristic(AbleUUID("00002a34-0000-1000-8000-00805f9b34fb"))
+            Log.v("test", "glucose ${glucose}")
 
             val convert = ConvertBytesToInt()
             val year: Int = convert.intFromTwoBytes(dateTimeBytes[0], dateTimeBytes[1])

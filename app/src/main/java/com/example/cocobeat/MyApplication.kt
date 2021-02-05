@@ -14,7 +14,7 @@ class MyApplication: Application() {
         super.onCreate()
         startKoin {
             androidContext(this@MyApplication)
-            modules(listOf(repositoryModule, viewModule, databaseModule))
+            modules(listOf(repositoryModule, viewModule, databaseModule, ableModule))
         }
         AbleManager.shared.initialize(this)
     }

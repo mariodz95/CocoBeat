@@ -41,13 +41,6 @@ class DevicesActivity : AppCompatActivity(), CoroutineScope, DevicesAdapter.OnIt
         binding = ActivityDevicesBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        with (AbleManager.shared) {
-            initialize(this@DevicesActivity)
-            handlePermissionRequestIfNotGranted(this@DevicesActivity)
-        }
-
-        AbleManager.shared.loggingOptions = AbleLogOptions.Issues
-
         turnBluetoothOnIfOff()
         statusCheck()
 
@@ -97,7 +90,7 @@ class DevicesActivity : AppCompatActivity(), CoroutineScope, DevicesAdapter.OnIt
         return true
     }
 
-    fun openDeviceDialog() {
+    private fun openDeviceDialog() {
         var dialog = DeviceListDialogFragment()
         dialog.show(supportFragmentManager, "deviceListDialogFragment")
     }

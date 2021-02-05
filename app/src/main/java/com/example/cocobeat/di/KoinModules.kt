@@ -2,6 +2,10 @@ package com.example.cocobeat.di
 
 import android.app.Application
 import androidx.room.Room
+import com.ablelib.manager.AbleManager
+import com.ablelib.manager.IAbleManager
+import com.ablelib.storage.AbleDeviceStorage
+import com.ablelib.storage.IAbleDeviceStorage
 import com.example.cocobeat.database.dao.ReadingDao
 import com.example.cocobeat.database.AppDatabase
 import com.example.cocobeat.model.MainActivityViewModel
@@ -11,8 +15,8 @@ import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val ableModule = module {
-/*    single<IAbleManager> { AbleManager.shared }
-    single<IAbleDeviceStorage> { AbleDeviceStorage.default }*/
+    single<IAbleManager> { AbleManager.shared }
+    single<IAbleDeviceStorage> { AbleDeviceStorage.default }
 }
 
 
