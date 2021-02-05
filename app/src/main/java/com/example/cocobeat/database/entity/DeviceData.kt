@@ -1,4 +1,4 @@
-package com.example.cocobeat.Entities
+package com.example.cocobeat.database.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

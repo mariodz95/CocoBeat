@@ -1,42 +1,24 @@
 package com.example.cocobeat.model
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import java.text.SimpleDateFormat
-import java.util.*
+import androidx.lifecycle.viewModelScope
+import com.example.cocobeat.database.entity.Reading
+import com.example.cocobeat.repository.ReadingRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class MainActivityViewModel : ViewModel() {
-    private var calendar = Calendar.getInstance()
-    private var year = calendar.get(Calendar.YEAR)
-    private var MONTH_DATE = SimpleDateFormat("MMMM")
-    private var monthName = MONTH_DATE.format(calendar.getTime())
+class MainActivityViewModel(private val repository: ReadingRepository) : ViewModel(){
 
-    fun getYear(): Int? {
-        return year
+    private val allData: LiveData<List<Reading>>
+
+    init {
+        allData = repository.allData
     }
 
-    fun getMonth(): String? {
-        return monthName
-    }
-
-    fun getNextMonth(): String {
-        calendar.add(Calendar.MONTH, 1);
-        val thisMonth: Int = calendar.get(Calendar.MONTH)
-        if(thisMonth == 0)
-        {
-            year = calendar.get(Calendar.YEAR)
+    fun addReadings(readings: Reading){
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.addReadings(readings)
         }
-        monthName = MONTH_DATE.format(calendar.getTime())
-        return monthName
-    }
-
-    fun getPrevMonth(): String {
-        calendar.add(Calendar.MONTH, -1);
-        val thisMonth: Int = calendar.get(Calendar.MONTH)
-        if(thisMonth == 11)
-        {
-            year = calendar.get(Calendar.YEAR)
-        }
-        monthName = MONTH_DATE.format(calendar.getTime())
-        return monthName
     }
 }
