@@ -2,6 +2,7 @@ package com.example.cocobeat
 
 import android.app.Application
 import com.ablelib.manager.AbleManager
+import com.ablelib.util.AbleLogOptions
 import com.example.cocobeat.di.ableModule
 import com.example.cocobeat.di.databaseModule
 import com.example.cocobeat.di.repositoryModule
@@ -17,5 +18,6 @@ class MyApplication: Application() {
             modules(listOf(repositoryModule, viewModule, databaseModule, ableModule))
         }
         AbleManager.shared.initialize(this)
+        AbleManager.shared.loggingOptions = AbleLogOptions.Full
     }
 }
