@@ -1,6 +1,7 @@
 package com.example.cocobeat.di
 
 import android.app.Application
+import android.util.Log
 import androidx.room.Room
 import com.ablelib.manager.AbleManager
 import com.ablelib.manager.IAbleManager
@@ -8,7 +9,8 @@ import com.ablelib.storage.AbleDeviceStorage
 import com.ablelib.storage.IAbleDeviceStorage
 import com.example.cocobeat.database.dao.ReadingDao
 import com.example.cocobeat.database.AppDatabase
-import com.example.cocobeat.model.MainActivityViewModel
+import com.example.cocobeat.model.ReadingViewModel
+import com.example.cocobeat.model.ReadingViewModelFactory
 import com.example.cocobeat.repository.ReadingRepository
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.viewmodel.dsl.viewModel
@@ -22,7 +24,13 @@ val ableModule = module {
 
 val viewModule = module{
     viewModel{
-        MainActivityViewModel(get())
+        ReadingViewModel(get())
+    }
+}
+
+val factoryModule = module{
+    factory {
+        ReadingViewModelFactory(get())
     }
 }
 

@@ -11,6 +11,16 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent" />
 
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart"
+        android:layout_width="match_parent"
+        android:layout_height="600px"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_devices"
+        app:layout_constraintTop_toBottomOf="@+id/month_picker_view"
+        tools:layout_editor_absoluteX="16dp" />
+
     <Button
         android:id="@+id/btn_devices"
         android:layout_width="wrap_content"

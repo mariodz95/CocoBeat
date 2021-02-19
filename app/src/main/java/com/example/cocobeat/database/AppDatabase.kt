@@ -1,7 +1,6 @@
 package com.example.cocobeat.database
-import android.content.Context
+
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.cocobeat.database.dao.ReadingDao
@@ -12,6 +11,7 @@ import com.example.cocobeat.util.Converters
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun readingDao(): ReadingDao
+
 
 /*    companion object{
 

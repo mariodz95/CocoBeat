@@ -11,21 +11,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cocobeat.R
 import com.example.cocobeat.adapter.DevicesAdapter
+import com.example.cocobeat.database.entity.Reading
 import com.example.cocobeat.databinding.ActivityDeviceDialogBinding
 import com.example.cocobeat.model.DeviceDataModel
-import com.example.cocobeat.repository.BluetoothService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
+import com.example.cocobeat.model.ReadingViewModel
+import com.example.cocobeat.repository.AccuCheckDevice
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlin.collections.ArrayList
+import org.koin.android.viewmodel.ext.android.sharedViewModel
+import java.lang.Exception
 
 
 class DeviceListDialogFragment : DialogFragment(), DevicesAdapter.OnItemClickListener {
+    private val mReadingViewModel: ReadingViewModel by sharedViewModel()
+
     private val deviceList = ArrayList<DeviceDataModel>()
     private var _binding: ActivityDeviceDialogBinding? = null
     private val binding get() = _binding!!
@@ -85,17 +91,27 @@ class DeviceListDialogFragment : DialogFragment(), DevicesAdapter.OnItemClickLis
     }
 
     private fun connectToDevice(deviceName: String) {
-        val bluetoothService = BluetoothService()
-        CoroutineScope(IO).launch {
-            bluetoothService.scanForNearbyDevices(deviceName)
-            bluetoothService.pairWithDevice(deviceName)
-            bluetoothService.readCharacteristic(deviceName)
+        val accuCheckDevice = AccuCheckDevice()
+        GlobalScope.launch {
+            accuCheckDevice.scanForNearbyDevices(deviceName)
+            accuCheckDevice.pairWithDevice(deviceName)
+            accuCheckDevice.setOnSyncListener(object : AccuCheckDevice.SyncListener {
+                override fun onSyncComplete(allReadings: MutableList<Reading>) {
+                    insertToDatabase(allReadings)
+                }
+            })
+            accuCheckDevice.readCharacteristic(deviceName)
         }
+    }
+
+    private fun insertToDatabase(allReadings: MutableList<Reading>){
+        mReadingViewModel.insertReadings(allReadings)
+        Toast.makeText(requireContext(), "Reading successfully added", Toast.LENGTH_SHORT)
+        dialog?.dismiss()
     }
 
     private val mBondingBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
-            Log.v("test", "Okida se")
         }
     }
 }

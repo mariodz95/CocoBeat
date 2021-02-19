@@ -4,8 +4,10 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.LinearLayout
+import androidx.lifecycle.MutableLiveData
 import com.example.cocobeat.databinding.DatePickerLayoutBinding
 import java.text.DateFormatSymbols
 import java.util.*
@@ -24,6 +26,9 @@ class MonthPicker @JvmOverloads constructor(
     private var monthNumber = calendar.get(Calendar.MONTH)
     private var monthName = getMonthForInt(monthNumber)
 
+    lateinit var onMonthChange: OnMonthChangeListener
+
+    val listen : MutableLiveData<Int> = MutableLiveData<Int>().apply { value = calendar.get(Calendar.MONTH) }
     init {
         binding = DatePickerLayoutBinding.inflate(LayoutInflater.from(context), this, true)
         displayDate()
@@ -34,6 +39,12 @@ class MonthPicker @JvmOverloads constructor(
             getNextMonth()
         }
         orientation = VERTICAL
+    }
+
+
+    fun setOnMonthListener(listener: OnMonthChangeListener) {
+        onMonthChange = listener
+        onMonthChange.getMonthAndYear(monthNumber, year)
     }
 
     private fun getMonthForInt(num: Int): String? {
@@ -52,7 +63,6 @@ class MonthPicker @JvmOverloads constructor(
         bundle.putInt("year", year) // ... save stuff
         bundle.putString("monthName", monthName)
         bundle.putInt("monthNumber", monthNumber)
-
         return bundle
     }
 
@@ -84,6 +94,12 @@ class MonthPicker @JvmOverloads constructor(
         }
         monthName = getMonthForInt(monthNumber)
         displayDate()
+
+/*
+        listen.value = monthNumber
+*/
+
+        onMonthChange.getMonthAndYear(monthNumber, year)
     }
 
     private fun getPrevMonth(){
@@ -96,5 +112,13 @@ class MonthPicker @JvmOverloads constructor(
         }
         monthName = getMonthForInt(monthNumber)
         displayDate()
+/*
+        listen.value = monthNumber
+*/
+        onMonthChange.getMonthAndYear(monthNumber, year)
+    }
+
+    interface OnMonthChangeListener{
+        fun getMonthAndYear(monthNumber: Int, year: Int)
     }
 }

@@ -21,6 +21,7 @@ allprojects {
         maven {
             url 'https://repo.repsy.io/mvn/codecons/ablelib'
         }
+        maven { url 'https://jitpack.io' }
     }
 }
 
