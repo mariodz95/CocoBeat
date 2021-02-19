@@ -12,4 +12,7 @@ interface ReadingDao {
 
     @Query("SELECT * FROM reading WHERE readingDate BETWEEN :startDate AND :endDate")
     fun getAllReadings(startDate: Date, endDate: Date) : LiveData<List<Reading>>
+
+    @Query("SELECT * FROM reading ORDER BY ID DESC LIMIT 1")
+    fun getLastReading() : LiveData<Reading>
 }

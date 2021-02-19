@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity(){
     private val repository : ReadingRepository by inject()
     private lateinit var readingViewModel: ReadingViewModel
 
-    var  data : LiveData<List<Reading>>? = null
+    var dataExist: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,21 +56,28 @@ class MainActivity : AppCompatActivity(){
         binding.monthPickerView.setOnMonthListener(object : MonthPicker.OnMonthChangeListener {
             override fun getMonthAndYear(monthNumber: Int, year: Int) {
                 val startDate = getDate(year, monthNumber, 0, 0, 0, true)
-                val endDate = getDate(year, monthNumber, 23, 59, 59, false)
+                val endDate = getDate(year, monthNumber, 0, 0, 0, false)
 
                 endDate.set(Calendar.DAY_OF_MONTH, endDate.getActualMaximum(Calendar.DAY_OF_MONTH));
 
-                data = readingViewModel.loadMonthData(startDate.time, endDate.time)
+                readingViewModel.loadMonthData(startDate.time, endDate.time)
 
-                data?.observe(this@MainActivity, androidx.lifecycle.Observer {
+                readingViewModel.monthData?.observe(this@MainActivity, androidx.lifecycle.Observer {
                     entries = arrayListOf<Entry>()
-                    binding.chart.setData(null)
+                    binding.chart.data = null
                     binding.chart.notifyDataSetChanged();
                     binding.chart.invalidate();
 
-                    if (!it.isNullOrEmpty()) {
+                    if (!it.isEmpty() ) {
                         val grouped = it.groupBy { DateFormat.format("dd", it.readingDate) }.mapValues { calculateAverage(it.value.map { it.value }) }
                         drawLineGraph(grouped, entries)
+                        dataExist = true
+                    }else if(it.isEmpty() && dataExist == false){
+                        readingViewModel.lastReading.observe(this@MainActivity, androidx.lifecycle.Observer {
+                            var year: Int = DateFormat.format("yyyy", it.readingDate).toString().toInt()
+                            var month: Int= DateFormat.format("M", it.readingDate).toString().toInt()
+                            binding.monthPickerView.setMonthAndYear(month, year)
+                        })
                     }
                 })
             }

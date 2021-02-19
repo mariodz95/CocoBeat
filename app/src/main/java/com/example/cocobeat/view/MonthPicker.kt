@@ -7,17 +7,16 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import androidx.lifecycle.MutableLiveData
 import com.example.cocobeat.databinding.DatePickerLayoutBinding
 import java.text.DateFormatSymbols
 import java.util.*
 
 
 class MonthPicker @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyle: Int = 0,
-    defStyleRes: Int = 0
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyle: Int = 0,
+        defStyleRes: Int = 0
 ) : LinearLayout(context, attrs, defStyle, defStyleRes){
     private var calendar = Calendar.getInstance()
     private var year = calendar.get(Calendar.YEAR)
@@ -28,7 +27,6 @@ class MonthPicker @JvmOverloads constructor(
 
     lateinit var onMonthChange: OnMonthChangeListener
 
-    val listen : MutableLiveData<Int> = MutableLiveData<Int>().apply { value = calendar.get(Calendar.MONTH) }
     init {
         binding = DatePickerLayoutBinding.inflate(LayoutInflater.from(context), this, true)
         displayDate()
@@ -41,6 +39,14 @@ class MonthPicker @JvmOverloads constructor(
         orientation = VERTICAL
     }
 
+    fun setMonthAndYear(month: Int, year: Int) {
+        monthNumber = month
+        monthName =  getMonthForInt(monthNumber)
+        this.year = year
+        displayDate()
+        onMonthChange.getMonthAndYear(monthNumber, year)
+
+    }
 
     fun setOnMonthListener(listener: OnMonthChangeListener) {
         onMonthChange = listener
@@ -60,7 +66,7 @@ class MonthPicker @JvmOverloads constructor(
     override fun onSaveInstanceState(): Parcelable? {
         val bundle = Bundle()
         bundle.putParcelable("superState", super.onSaveInstanceState())
-        bundle.putInt("year", year) // ... save stuff
+        bundle.putInt("year", year)
         bundle.putString("monthName", monthName)
         bundle.putInt("monthNumber", monthNumber)
         return bundle
@@ -95,10 +101,6 @@ class MonthPicker @JvmOverloads constructor(
         monthName = getMonthForInt(monthNumber)
         displayDate()
 
-/*
-        listen.value = monthNumber
-*/
-
         onMonthChange.getMonthAndYear(monthNumber, year)
     }
 
@@ -112,9 +114,7 @@ class MonthPicker @JvmOverloads constructor(
         }
         monthName = getMonthForInt(monthNumber)
         displayDate()
-/*
-        listen.value = monthNumber
-*/
+
         onMonthChange.getMonthAndYear(monthNumber, year)
     }
 
