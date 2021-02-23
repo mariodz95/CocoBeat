@@ -4,17 +4,15 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.format.DateFormat
-import android.util.Log
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
 import com.example.cocobeat.R
-import com.example.cocobeat.database.entity.Reading
 import com.example.cocobeat.databinding.ActivityMainBinding
 import com.example.cocobeat.model.ReadingViewModel
 import com.example.cocobeat.model.ReadingViewModelFactory
 import com.example.cocobeat.repository.ReadingRepository
+import com.example.cocobeat.util.Helper
 import com.example.cocobeat.view.MonthPicker
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.LegendEntry
@@ -55,8 +53,9 @@ class MainActivity : AppCompatActivity(){
 
         binding.monthPickerView.setOnMonthListener(object : MonthPicker.OnMonthChangeListener {
             override fun getMonthAndYear(monthNumber: Int, year: Int) {
-                val startDate = getDate(year, monthNumber, 0, 0, 0, true)
-                val endDate = getDate(year, monthNumber, 0, 0, 0, false)
+                var helper = Helper()
+                val startDate = helper.getDate(year, monthNumber, 0, 0, 0, true)
+                val endDate = helper.getDate(year, monthNumber, 0, 0, 0, false)
 
                 endDate.set(Calendar.DAY_OF_MONTH, endDate.getActualMaximum(Calendar.DAY_OF_MONTH));
 
@@ -69,7 +68,7 @@ class MainActivity : AppCompatActivity(){
                     binding.chart.invalidate();
 
                     if (!it.isEmpty() ) {
-                        val grouped = it.groupBy { DateFormat.format("dd", it.readingDate) }.mapValues { calculateAverage(it.value.map { it.value }) }
+                        val grouped = it.groupBy { DateFormat.format("dd", it.readingDate) }.mapValues { helper.calculateAverage(it.value.map { it.value }) }
                         drawLineGraph(grouped, entries)
                         dataExist = true
                     }else if(it.isEmpty() && dataExist == false){
@@ -82,18 +81,6 @@ class MainActivity : AppCompatActivity(){
                 })
             }
         })
-    }
-
-    private fun calculateAverage(marks: List<Double?>): Double {
-        var sum = 0.0
-
-        if (!marks.isEmpty()) {
-            for (mark in marks) {
-                sum += mark!!
-            }
-            return sum / marks.size
-        }
-        return sum
     }
 
     private fun drawLineGraph(grouped:  Map<CharSequence, Double>, entries: ArrayList<Entry>){
@@ -134,21 +121,6 @@ class MainActivity : AppCompatActivity(){
 
         binding.chart.notifyDataSetChanged();
         binding.chart.invalidate();
-    }
-
-    private fun getDate(year: Int, monthNumber: Int, hour: Int, minute: Int, second: Int, getMin: Boolean) : Calendar{
-        val startDate: Calendar = Calendar.getInstance()
-        startDate.set(Calendar.YEAR, year)
-        startDate.set(Calendar.MONTH, monthNumber)
-        startDate.set(Calendar.HOUR, hour);
-        startDate.set(Calendar.MINUTE, minute);
-        startDate.set(Calendar.SECOND, second);
-        if(getMin){
-             startDate.set(Calendar.DAY_OF_MONTH, startDate.getActualMinimum(Calendar.DAY_OF_MONTH))
-        }else{
-            startDate.set(Calendar.DAY_OF_MONTH, startDate.getActualMaximum(Calendar.DAY_OF_MONTH))
-        }
-        return startDate
     }
 
     private fun openDevicesActivity() {

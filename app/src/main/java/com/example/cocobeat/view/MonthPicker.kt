@@ -4,13 +4,11 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.example.cocobeat.databinding.DatePickerLayoutBinding
 import java.text.DateFormatSymbols
 import java.util.*
-
 
 class MonthPicker @JvmOverloads constructor(
         context: Context,
@@ -45,7 +43,6 @@ class MonthPicker @JvmOverloads constructor(
         this.year = year
         displayDate()
         onMonthChange.getMonthAndYear(monthNumber, year)
-
     }
 
     fun setOnMonthListener(listener: OnMonthChangeListener) {
@@ -53,7 +50,7 @@ class MonthPicker @JvmOverloads constructor(
         onMonthChange.getMonthAndYear(monthNumber, year)
     }
 
-    private fun getMonthForInt(num: Int): String? {
+     fun getMonthForInt(num: Int): String? {
         var month = "error"
         val dfs = DateFormatSymbols()
         val months: Array<String> = dfs.getMonths()

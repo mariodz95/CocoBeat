@@ -1,7 +1,5 @@
 package com.example.cocobeat.repository
 
-import android.R.attr
-import android.util.Log
 import com.ablelib.comm.asyncComm
 import com.ablelib.exceptions.BluetoothStateException
 import com.ablelib.manager.AbleManager

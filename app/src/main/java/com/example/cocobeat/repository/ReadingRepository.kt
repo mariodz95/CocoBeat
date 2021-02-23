@@ -7,16 +7,21 @@ import com.example.cocobeat.database.entity.Reading
 import java.util.*
 
 
-class ReadingRepository(private val readingDao: ReadingDao){
+class ReadingRepository(private val readingDao: ReadingDao) : DefaultReadingRepository{
     var allData: LiveData<List<Reading>>? = null
-    var lastReading: LiveData<Reading> = readingDao.getLastReading()
+    private lateinit var lastReading: LiveData<Reading>
 
-     fun getMonthData(startDate: Date, endDate: Date)  : LiveData<List<Reading>>? {
+    override fun getLastReading(): LiveData<Reading> {
+        lastReading = readingDao.getLastReading()
+        return lastReading
+    }
+
+    override fun getMonthData(startDate: Date, endDate: Date) : LiveData<List<Reading>>? {
         allData = readingDao.getAllReadings(startDate, endDate)
         return allData
     }
 
-     fun insertReadings(readings: MutableList<Reading>){
+     override fun insertReadings(readings: MutableList<Reading>){
         readingDao.insertReadings(readings)
     }
 }
