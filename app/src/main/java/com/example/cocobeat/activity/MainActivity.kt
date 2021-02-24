@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity(){
                         drawLineGraph(grouped, entries)
                         dataExist = true
                     }else if(it.isEmpty() && dataExist == false){
-                        readingViewModel.lastReading.observe(this@MainActivity, androidx.lifecycle.Observer {
+                        readingViewModel.lastReading?.observe(this@MainActivity, androidx.lifecycle.Observer {
                             var year: Int = DateFormat.format("yyyy", it.readingDate).toString().toInt()
                             var month: Int= DateFormat.format("M", it.readingDate).toString().toInt()
                             binding.monthPickerView.setMonthAndYear(month, year)

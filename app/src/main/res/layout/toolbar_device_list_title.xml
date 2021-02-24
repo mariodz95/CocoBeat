@@ -12,6 +12,7 @@
         app:navigationIcon="@drawable/ic_baseline_arrow_back_24_orange" />
 
     <TextView
+        android:id="@+id/devices_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/title_activity_devices"

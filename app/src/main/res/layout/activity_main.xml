@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.MainActivity">
+    tools:context=".activity.MainActivity"
+    android:id="@+id/main">
 
     <com.example.cocobeat.view.MonthPicker
         android:id="@+id/month_picker_view"

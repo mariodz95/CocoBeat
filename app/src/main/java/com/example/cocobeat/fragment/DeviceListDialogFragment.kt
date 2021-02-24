@@ -6,14 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cocobeat.R
@@ -26,8 +24,6 @@ import com.example.cocobeat.repository.AccuCheckDevice
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.sharedViewModel
-import java.lang.Exception
-
 
 class DeviceListDialogFragment : DialogFragment(), DevicesAdapter.OnItemClickListener {
     private val mReadingViewModel: ReadingViewModel by sharedViewModel()

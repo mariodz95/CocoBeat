@@ -9,8 +9,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.ablelib.manager.AbleManager
-import com.ablelib.util.AbleLogOptions
 import com.ablelib.util.turnBluetoothOnIfOff
 import com.example.cocobeat.model.DeviceDataModel
 import com.example.cocobeat.R
