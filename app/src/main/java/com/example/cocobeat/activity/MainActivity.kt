@@ -29,7 +29,6 @@ class MainActivity : AppCompatActivity(){
     private lateinit var binding: ActivityMainBinding
     private val repository : ReadingRepository by inject()
     private lateinit var readingViewModel: ReadingViewModel
-
     var dataExist: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,21 +56,21 @@ class MainActivity : AppCompatActivity(){
                 val startDate = helper.getDate(year, monthNumber, 0, 0, 0, true)
                 val endDate = helper.getDate(year, monthNumber, 0, 0, 0, false)
 
-                endDate.set(Calendar.DAY_OF_MONTH, endDate.getActualMaximum(Calendar.DAY_OF_MONTH));
+                endDate.set(Calendar.DAY_OF_MONTH, endDate.getActualMaximum(Calendar.DAY_OF_MONTH))
 
                 readingViewModel.loadMonthData(startDate.time, endDate.time)
 
                 readingViewModel.monthData?.observe(this@MainActivity, androidx.lifecycle.Observer {
                     entries = arrayListOf<Entry>()
                     binding.chart.data = null
-                    binding.chart.notifyDataSetChanged();
-                    binding.chart.invalidate();
+                    binding.chart.notifyDataSetChanged()
+                    binding.chart.invalidate()
 
-                    if (!it.isEmpty() ) {
+                    if (it.isNotEmpty()) {
                         val grouped = it.groupBy { DateFormat.format("dd", it.readingDate) }.mapValues { helper.calculateAverage(it.value.map { it.value }) }
                         drawLineGraph(grouped, entries)
                         dataExist = true
-                    }else if(it.isEmpty() && dataExist == false){
+                    }else if(it.isEmpty() && !dataExist){
                         readingViewModel.lastReading?.observe(this@MainActivity, androidx.lifecycle.Observer {
                             var year: Int = DateFormat.format("yyyy", it.readingDate).toString().toInt()
                             var month: Int= DateFormat.format("M", it.readingDate).toString().toInt()
@@ -89,8 +88,8 @@ class MainActivity : AppCompatActivity(){
         }
 
         val dataSet = LineDataSet(entries, "")
-        dataSet.setColor(getResources().getColor(R.color.green))
-        dataSet.setDrawCircles(false);
+        dataSet.color = resources.getColor(R.color.green)
+        dataSet.setDrawCircles(false)
         dataSet.setDrawValues(false)
         dataSet.lineWidth = 3f
 
@@ -99,28 +98,25 @@ class MainActivity : AppCompatActivity(){
         legendEntry.formColor = Color.GREEN
 
         val legend: Legend = binding.chart.legend
-        legend.setCustom(listOf(legendEntry));
-        legend.form = Legend.LegendForm.CIRCLE;
+        legend.setCustom(listOf(legendEntry))
+        legend.form = Legend.LegendForm.CIRCLE
 
-        legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP;
-        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT;
-        legend.orientation = Legend.LegendOrientation.HORIZONTAL;
-        legend.setDrawInside(false);
+        legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
+        legend.horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+        legend.orientation = Legend.LegendOrientation.HORIZONTAL
+        legend.setDrawInside(false)
 
         val lineData = LineData(dataSet)
         binding.chart.description.isEnabled = false
         binding.chart.axisRight.isEnabled = false
-        binding.chart.axisLeft.setDrawGridLines(false);
-        binding.chart.xAxis.setDrawGridLines(false);
+        binding.chart.axisLeft.setDrawGridLines(false)
+        binding.chart.xAxis.setDrawGridLines(false)
         binding.chart.setTouchEnabled(false)
         binding.chart.setPinchZoom(false)
-
         binding.chart.xAxis.position = XAxis.XAxisPosition.BOTTOM
-
-        binding.chart.data = lineData;
-
-        binding.chart.notifyDataSetChanged();
-        binding.chart.invalidate();
+        binding.chart.data = lineData
+        binding.chart.notifyDataSetChanged()
+        binding.chart.invalidate()
     }
 
     private fun openDevicesActivity() {

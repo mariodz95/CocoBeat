@@ -36,10 +36,10 @@ class MonthPickerTest {
     fun monthPicker_GetMonthForInt_ReturnMonthNameForGivenNumber() {
         val cal: Calendar = Calendar.getInstance()
         cal.set(Calendar.DAY_OF_MONTH, 0)
-        val month_date = SimpleDateFormat("MMMM")
-        val month_name: String = month_date.format(cal.getTime())
+        val monthDate = SimpleDateFormat("MMMM")
+        val monthName: String = monthDate.format(cal.time)
         val value = monthPicker.getMonthForInt(0)
 
-        assertThat(value).isEqualTo(month_name)
+        assertThat(value).isEqualTo(monthName)
     }
 }

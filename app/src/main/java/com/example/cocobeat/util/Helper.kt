@@ -7,7 +7,7 @@ class Helper {
      fun calculateAverage(marks: List<Double?>): Double {
         var sum = 0.0
 
-        if (!marks.isEmpty()) {
+        if (marks.isNotEmpty()) {
             for (mark in marks) {
                 sum += mark!!
             }
@@ -20,10 +20,10 @@ class Helper {
         val startDate: Calendar = Calendar.getInstance()
         startDate.set(Calendar.YEAR, year)
         startDate.set(Calendar.MONTH, monthNumber)
-        startDate.set(Calendar.HOUR, hour);
-        startDate.set(Calendar.MINUTE, minute);
-        startDate.set(Calendar.SECOND, second);
-         startDate.set(Calendar.MILLISECOND, second);
+        startDate.set(Calendar.HOUR, hour)
+        startDate.set(Calendar.MINUTE, minute)
+        startDate.set(Calendar.SECOND, second)
+         startDate.set(Calendar.MILLISECOND, second)
          if(getMin){
             startDate.set(Calendar.DAY_OF_MONTH, startDate.getActualMinimum(Calendar.DAY_OF_MONTH))
         }else{

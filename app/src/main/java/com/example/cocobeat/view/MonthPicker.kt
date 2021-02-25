@@ -18,7 +18,7 @@ class MonthPicker @JvmOverloads constructor(
 ) : LinearLayout(context, attrs, defStyle, defStyleRes){
     private var calendar = Calendar.getInstance()
     private var year = calendar.get(Calendar.YEAR)
-    private var binding: DatePickerLayoutBinding
+    private var binding: DatePickerLayoutBinding = DatePickerLayoutBinding.inflate(LayoutInflater.from(context), this, true)
 
     private var monthNumber = calendar.get(Calendar.MONTH)
     private var monthName = getMonthForInt(monthNumber)
@@ -26,7 +26,6 @@ class MonthPicker @JvmOverloads constructor(
     lateinit var onMonthChange: OnMonthChangeListener
 
     init {
-        binding = DatePickerLayoutBinding.inflate(LayoutInflater.from(context), this, true)
         displayDate()
         binding.imgArrowBack.setOnClickListener{
             getPrevMonth()
@@ -53,7 +52,7 @@ class MonthPicker @JvmOverloads constructor(
      fun getMonthForInt(num: Int): String? {
         var month = "error"
         val dfs = DateFormatSymbols()
-        val months: Array<String> = dfs.getMonths()
+        val months: Array<String> = dfs.months
         if (num in 0..11) {
             month = months[num]
         }
@@ -88,11 +87,11 @@ class MonthPicker @JvmOverloads constructor(
     }
 
     private fun getNextMonth() {
-        calendar.add(Calendar.MONTH, 1);
+        calendar.add(Calendar.MONTH, 1)
         monthNumber += 1
         if(monthNumber > 11)
         {
-            year += 1;
+            year += 1
             monthNumber = 0
         }
         monthName = getMonthForInt(monthNumber)
@@ -102,7 +101,7 @@ class MonthPicker @JvmOverloads constructor(
     }
 
     private fun getPrevMonth(){
-        calendar.add(Calendar.MONTH, -1);
+        calendar.add(Calendar.MONTH, -1)
         monthNumber -= 1
         if(monthNumber < 0)
         {

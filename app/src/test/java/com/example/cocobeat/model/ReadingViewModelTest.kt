@@ -28,7 +28,7 @@ class ReadingViewModelTest {
 
     @Before
     fun setup(){
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.initMocks(this)
         `when`(readingRepository.lastReading).thenReturn(lastReading)
 
         viewModel = ReadingViewModel(readingRepository)

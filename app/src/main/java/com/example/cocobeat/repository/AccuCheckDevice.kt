@@ -73,8 +73,8 @@ class AccuCheckDevice{
     fun readCharacteristic(deviceName: String){
         val myDevice = AbleDeviceStorage.default.findByName(deviceName)
 
-        val deviceServices = mutableListOf<AbleService>();
-        val deviceCharacteristic = mutableListOf<AbleCharacteristic>();
+        val deviceServices = mutableListOf<AbleService>()
+        val deviceCharacteristic = mutableListOf<AbleCharacteristic>()
         var modelNumber : String = ""
         var serialNumber : String = ""
         var deviceModel : String = ""
@@ -132,7 +132,7 @@ class AccuCheckDevice{
                         val hours: Int = convert.intFromOneByte(dateTimeBytes[4])
                         val minutes: Int = convert.intFromOneByte(dateTimeBytes[5])
                         val seconds: Int = convert.intFromOneByte(dateTimeBytes[6])
-                        calendar.set(year, month - 1, day, hours, minutes, seconds);
+                        calendar.set(year, month - 1, day, hours, minutes, seconds)
 
                         val glucoseMeasurementCharacteristic = deviceCharacteristic.first { characteristic -> characteristic.uuid == UUID_GLUCOSE_MEASUREMENT_CHARACTERISTIC }
                         val glucoseDescriptor = glucoseMeasurementCharacteristic.descriptors.find {
@@ -154,7 +154,7 @@ class AccuCheckDevice{
                     val characteristicValue = characteristic.value
                     val convert = ConvertBytesAndNumbers()
 
-                    if(characteristic.uuid == UUID_RECORD_ACCESS_CONTROL_POINT_CHARACTERISTIC && hasReceivedNumOfReadings == false){
+                    if(characteristic.uuid == UUID_RECORD_ACCESS_CONTROL_POINT_CHARACTERISTIC && !hasReceivedNumOfReadings){
                         numberOfReadings = convert.intFromTwoBytes(
                             characteristicValue[2],
                             characteristicValue[3]
@@ -167,7 +167,7 @@ class AccuCheckDevice{
                     if(characteristic.uuid == UUID_GLUCOSE_MEASUREMENT_CHARACTERISTIC) {
                         var UUID = UUID.randomUUID()
                         var index = 0
-                        var data = characteristic.value;
+                        var data = characteristic.value
                         //Read Measurement Flags
                         var timeOffsetPresent = (data.get(index) and 0x01 > 0)
                         var glucoseConcentrationPresent = data.get(index) and 0x02 > 0
@@ -177,34 +177,34 @@ class AccuCheckDevice{
                         } else {
                             "MGDL"
                         }
-                        index++;
+                        index++
 
-                        var sequenceNumber = convert.intFromTwoBytes(data[index++], data[index++]);
+                        var sequenceNumber = convert.intFromTwoBytes(data[index++], data[index++])
 
-                        val cal = getTime(Arrays.copyOfRange(characteristic.value, index, index + 7))
+                        val cal = getTime(characteristic.value.copyOfRange(index, index + 7))
                         cal!![Calendar.MILLISECOND] = 0
 
-                        index += 7;
+                        index += 7
 
                         if (timeOffsetPresent) {
-                            index += 2;
+                            index += 2
                         }
 
                         //Get glucoseConcentration
-                        var leastSignificant = data[index++];
-                        var mostSignificant = data[index++];
+                        var leastSignificant = data[index++]
+                        var mostSignificant = data[index++]
 
                         var mantissa = convert.sfloatMantissaFromTwoBytes(
                             leastSignificant,
                             mostSignificant
-                        );
-                        var exponent = convert.sfloatExponentFromOneByte(mostSignificant);
+                        )
+                        var exponent = convert.sfloatExponentFromOneByte(mostSignificant)
                         var glucoseValue = Math.pow(10.0, exponent) * mantissa
 
-                        if(units == "MGDL"){
-                            glucoseValue *= 100000
+                        glucoseValue *= if(units == "MGDL"){
+                            100000
                         }else{
-                            glucoseValue *= 1000
+                            1000
                         }
 
                         var reading = Reading(

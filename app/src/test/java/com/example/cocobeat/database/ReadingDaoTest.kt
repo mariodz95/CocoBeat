@@ -2,10 +2,8 @@ package com.example.cocobeat.database
 import android.content.Context
 import android.os.Build
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.cocobeat.database.dao.ReadingDao
 import org.junit.After
 import org.junit.Before
@@ -20,7 +18,6 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import java.util.*
 
-//@RunWith(AndroidJUnit4::class)
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [Build.VERSION_CODES.O_MR1])
 class ReadingDaoTest {

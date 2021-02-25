@@ -39,8 +39,7 @@ class DeviceListDialogFragment : DialogFragment(), DevicesAdapter.OnItemClickLis
         val view = binding.root
         binding.recyclerViewDialog.layoutManager = LinearLayoutManager(this.context)
 
-        deviceList.add(
-                DeviceDataModel(
+        deviceList.add(DeviceDataModel(
                         R.drawable.ic_launcher_background,
                         "Movesense Wearable",
                         null
@@ -69,8 +68,8 @@ class DeviceListDialogFragment : DialogFragment(), DevicesAdapter.OnItemClickLis
         params.height = WindowManager.LayoutParams.WRAP_CONTENT
         dialog!!.window!!.attributes = params as WindowManager.LayoutParams
 
-        val  filter = IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-        context?.registerReceiver(mBondingBroadcastReceiver, filter);
+        val  filter = IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED)
+        context?.registerReceiver(mBondingBroadcastReceiver, filter)
     }
 
     override fun onPause() {

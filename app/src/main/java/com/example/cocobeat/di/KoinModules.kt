@@ -1,7 +1,6 @@
 package com.example.cocobeat.di
 
 import android.app.Application
-import android.util.Log
 import androidx.room.Room
 import com.ablelib.manager.AbleManager
 import com.ablelib.manager.IAbleManager
@@ -20,7 +19,6 @@ val ableModule = module {
     single<IAbleManager> { AbleManager.shared }
     single<IAbleDeviceStorage> { AbleDeviceStorage.default }
 }
-
 
 val viewModule = module{
     viewModel{
@@ -50,7 +48,6 @@ val databaseModule = module {
     single { provideDatabase(androidApplication()) }
     single { provideDao(get()) }
 }
-
 
 val repositoryModule = module {
     fun provideReadingRepository(readingDao: ReadingDao): ReadingRepository {

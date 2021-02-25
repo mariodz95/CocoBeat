@@ -3,13 +3,11 @@ package com.example.cocobeat
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.example.cocobeat.activity.DevicesActivity
-import org.hamcrest.CoreMatchers.not
-import org.junit.Rule
+import org.hamcrest.core.IsNot.not
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -26,7 +24,6 @@ class DevicesActivityTest {
     @Test
     fun test_visibility_recyclerView() {
         val activityScenario = ActivityScenario.launch(DevicesActivity::class.java)
-
         onView(withId(R.id.devices)).check(matches(isDisplayed()))
         onView(withId(R.id.recycler_view)).check(matches(isDisplayed()))
     }
@@ -106,7 +103,7 @@ class DevicesActivityTest {
     @Test
     fun test_navDevicesActivity(){
         val activityScenario = ActivityScenario.launch(DevicesActivity::class.java)
-        onView(withId(R.id.toolbar)).check(ViewAssertions.matches(isDisplayed()))
+        onView(withId(R.id.toolbar)).check(matches(isDisplayed()))
         onView(withId(R.id.toolbar)).perform(click())
         onView(withId(R.id.main)).check(matches(isDisplayed()))
     }
