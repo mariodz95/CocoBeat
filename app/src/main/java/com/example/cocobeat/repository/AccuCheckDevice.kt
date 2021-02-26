@@ -9,6 +9,8 @@ import com.ablelib.models.AbleDevice
 import com.ablelib.models.AbleService
 import com.ablelib.models.AbleUUID
 import com.ablelib.storage.AbleDeviceStorage
+import com.example.cocobeat.R
+import com.example.cocobeat.database.entity.Device
 import com.example.cocobeat.database.entity.Reading
 import com.example.cocobeat.util.ConvertBytesAndNumbers
 import java.util.*
@@ -33,6 +35,7 @@ class AccuCheckDevice{
 
     lateinit var sync: SyncListener
     var allReadings: MutableList<Reading> = mutableListOf<Reading>()
+    lateinit var device: Device
     var hasReceivedNumOfReadings: Boolean  = false
     var isEnd: Int = 0
     var numberOfReadings: Int = 0
@@ -41,7 +44,7 @@ class AccuCheckDevice{
         sync = listener
     }
 
-     suspend fun scanForNearbyDevices(deviceName: String) {
+     suspend fun scanForNearbyDevices(deviceName: String?) {
             try {
                 val devices = AbleManager.shared.scan()
 
@@ -61,17 +64,17 @@ class AccuCheckDevice{
             }
     }
 
-     suspend fun pairWithDevice(deviceName: String) {
+     suspend fun pairWithDevice(deviceName: String?) {
         try {
-            val myDevice = AbleDeviceStorage.default.findByName(deviceName)
+            val myDevice = AbleDeviceStorage.default.findByName(deviceName.toString())
             val pairedDevice = myDevice.pair()
         } catch (e: Exception) {
             // handle the exception
         }
     }
 
-    fun readCharacteristic(deviceName: String){
-        val myDevice = AbleDeviceStorage.default.findByName(deviceName)
+    fun readCharacteristic(deviceName: String?){
+        val myDevice = AbleDeviceStorage.default.findByName(deviceName.toString())
 
         val deviceServices = mutableListOf<AbleService>()
         val deviceCharacteristic = mutableListOf<AbleCharacteristic>()
@@ -220,7 +223,8 @@ class AccuCheckDevice{
                         allReadings.add(reading)
 
                         if(isEnd == numberOfReadings){
-                            sync.onSyncComplete(allReadings)
+                            device = Device(java.util.UUID.randomUUID(), serialNumber, calendar.time, "Accu-Chek", R.drawable.ic_launcher_background)
+                            sync.onSyncComplete(allReadings, device)
                         }
                     }
                 }
@@ -267,7 +271,7 @@ class AccuCheckDevice{
     }
 
     interface SyncListener{
-        fun onSyncComplete(allReadings: MutableList<Reading>)
+        fun onSyncComplete(allReadings: MutableList<Reading>, device: Device)
     }
 
     private fun getTime(timeBytes: ByteArray): Calendar? {

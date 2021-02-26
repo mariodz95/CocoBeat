@@ -4,20 +4,28 @@ import android.content.Intent
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
+import android.text.format.DateFormat
+import android.view.View
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ablelib.util.turnBluetoothOnIfOff
-import com.example.cocobeat.model.DeviceDataModel
 import com.example.cocobeat.R
 import com.example.cocobeat.adapter.DevicesAdapter
 import com.example.cocobeat.databinding.ActivityDevicesBinding
 import com.example.cocobeat.fragment.DeviceListDialogFragment
+import com.example.cocobeat.model.*
+import com.example.cocobeat.repository.DeviceRepository
+import com.example.cocobeat.repository.ReadingRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import org.koin.android.ext.android.inject
+import org.koin.android.viewmodel.compat.SharedViewModelCompat.sharedViewModel
+import org.koin.android.viewmodel.ext.android.sharedViewModel
 import kotlin.coroutines.CoroutineContext
 
 
@@ -25,6 +33,8 @@ class DevicesActivity : AppCompatActivity(), CoroutineScope, DevicesAdapter.OnIt
     private val deviceList = ArrayList<DeviceDataModel>()
     private var job: Job = Job()
     private lateinit var binding: ActivityDevicesBinding
+    private val repository : DeviceRepository by inject()
+    private lateinit var deviceViewModel: DeviceViewModel
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -42,9 +52,9 @@ class DevicesActivity : AppCompatActivity(), CoroutineScope, DevicesAdapter.OnIt
         turnBluetoothOnIfOff()
         statusCheck()
 
-        for(i in 0..5){
-            deviceList.add(DeviceDataModel(R.drawable.ic_launcher_background, "Device 1", "xx/xx/XXXX"))
-        }
+        var factory = DeviceViewModelFactory(repository)
+        deviceViewModel = ViewModelProvider(this, factory)[DeviceViewModel::class.java]
+
 
         supportActionBar?.apply {
             displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
@@ -56,10 +66,20 @@ class DevicesActivity : AppCompatActivity(), CoroutineScope, DevicesAdapter.OnIt
             onBackPressed()
         }
 
-        binding.recyclerView.apply{
-                adapter = DevicesAdapter(deviceList, this@DevicesActivity)
-                layoutManager = LinearLayoutManager(this@DevicesActivity)
-        }
+        deviceViewModel.allDevices.observe(this@DevicesActivity, androidx.lifecycle.Observer {
+            if(it.isNullOrEmpty()){
+                binding.emptyView.visibility = View.VISIBLE
+
+                binding.recyclerView.visibility = View.INVISIBLE
+            }else {
+                binding.emptyView.visibility = View.INVISIBLE
+                binding.recyclerView.visibility = View.VISIBLE
+                binding.recyclerView.apply {
+                    adapter = DevicesAdapter(it, this@DevicesActivity)
+                    layoutManager = LinearLayoutManager(this@DevicesActivity)
+                }
+            }
+        })
 
         binding.buttonAddDevice.setOnClickListener{
             openDeviceDialog()

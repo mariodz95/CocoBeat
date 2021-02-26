@@ -72,9 +72,11 @@ class MainActivity : AppCompatActivity(){
                         dataExist = true
                     }else if(it.isEmpty() && !dataExist){
                         readingViewModel.lastReading?.observe(this@MainActivity, androidx.lifecycle.Observer {
-                            var year: Int = DateFormat.format("yyyy", it.readingDate).toString().toInt()
-                            var month: Int= DateFormat.format("M", it.readingDate).toString().toInt()
-                            binding.monthPickerView.setMonthAndYear(month, year)
+                            if(it !== null) {
+                                var year: Int = DateFormat.format("yyyy", it.readingDate).toString().toInt()
+                                var month: Int = DateFormat.format("M", it.readingDate).toString().toInt()
+                                binding.monthPickerView.setMonthAndYear(month, year)
+                            }
                         })
                     }
                 })

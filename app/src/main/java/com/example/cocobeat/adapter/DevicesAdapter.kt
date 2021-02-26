@@ -4,12 +4,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cocobeat.model.DeviceDataModel
+import com.example.cocobeat.database.entity.Device
 import com.example.cocobeat.databinding.DeviceRowItemBinding
+import java.text.SimpleDateFormat
 
 
 class DevicesAdapter(
-    private val deviceList: ArrayList<DeviceDataModel>,
+    private val deviceList: List<Device>,
     private val listener: OnItemClickListener
 ) : RecyclerView.Adapter<DevicesAdapter.ViewHolder>() {
 
@@ -18,7 +19,7 @@ class DevicesAdapter(
 
     //this method is returning the view for each item in the list
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        _binding = DeviceRowItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false)
+        _binding = DeviceRowItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         val view = binding.root
         return ViewHolder(view)
     }
@@ -47,10 +48,13 @@ class DevicesAdapter(
             }
         }
 
-        fun bindItems(device: DeviceDataModel) {
+        fun bindItems(device: Device) {
             binding.deviceImage.setImageResource((device.imageResource))
-            binding.deviceName.text = device.deviceName
-            binding.deviceSyncDate.text = device.deviceSyncData
+            binding.deviceName.text = device.name
+            if(device.lastSyncDate != null) {
+                val format = SimpleDateFormat("EEEE, MMMM d, yyyy 'at' h:mm a")
+                binding.deviceSyncDate.text = format.format(device.lastSyncDate.time)
+            }
         }
     }
 
