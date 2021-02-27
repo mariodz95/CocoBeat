@@ -1,44 +1,36 @@
 package com.example.cocobeat.fragment
 
-import android.app.Activity
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cocobeat.R
-import com.example.cocobeat.activity.DevicesActivity
 import com.example.cocobeat.adapter.DevicesAdapter
 import com.example.cocobeat.database.entity.Device
-import com.example.cocobeat.database.entity.Reading
 import com.example.cocobeat.databinding.ActivityDeviceDialogBinding
-import com.example.cocobeat.model.DeviceViewModel
-import com.example.cocobeat.model.ReadingViewModel
-import com.example.cocobeat.repository.AccuCheckDevice
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.koin.android.viewmodel.ext.android.sharedViewModel
 import java.util.*
 
 
 class DeviceListDialogFragment : DialogFragment(), DevicesAdapter.OnItemClickListener {
-    private val mReadingViewModel: ReadingViewModel by sharedViewModel()
-    private val mDeviceViewModel: DeviceViewModel by sharedViewModel()
-
     private val deviceList = mutableListOf<Device>()
     private var _binding: ActivityDeviceDialogBinding? = null
     private val binding get() = _binding!!
-    var activity: Activity? = getActivity()
+
+    lateinit var dialogListener: DialogClosedListener
+
+    fun setOnDialogCloseListener(listener: DialogClosedListener) {
+        dialogListener = listener
+    }
 
     override  fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, saveInstanceState: Bundle?
@@ -67,7 +59,7 @@ class DeviceListDialogFragment : DialogFragment(), DevicesAdapter.OnItemClickLis
             )
         )
 
-        binding.recyclerViewDialog.adapter = DevicesAdapter(deviceList, this)
+        binding.recyclerViewDialog.adapter = DevicesAdapter(deviceList, this, true)
 
         binding.buttonCancel.setOnClickListener{
             dialog?.dismiss()
@@ -106,27 +98,16 @@ class DeviceListDialogFragment : DialogFragment(), DevicesAdapter.OnItemClickLis
     }
 
     private fun connectToDevice(deviceName: String?) {
-        val accuCheckDevice = AccuCheckDevice()
-        GlobalScope.launch {
-            accuCheckDevice.scanForNearbyDevices(deviceName)
-            accuCheckDevice.pairWithDevice(deviceName)
-            accuCheckDevice.setOnSyncListener(object : AccuCheckDevice.SyncListener {
-                override fun onSyncComplete(allReadings: MutableList<Reading>, device: Device) {
-                    insertToDatabase(allReadings, device)
-                }
-            })
-            accuCheckDevice.readCharacteristic(deviceName)
-        }
-    }
-
-    private fun insertToDatabase(allReadings: MutableList<Reading>, device: Device) {
-        mReadingViewModel.insertReadings(allReadings)
-        mDeviceViewModel.insertDevice(device)
         dialog?.dismiss()
+        dialogListener.onClose(deviceName)
     }
 
     private val mBondingBroadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
         }
+    }
+
+    interface DialogClosedListener{
+        fun onClose(deviceName: String?)
     }
 }

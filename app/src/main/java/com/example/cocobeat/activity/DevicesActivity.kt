@@ -4,7 +4,6 @@ import android.content.Intent
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
-import android.text.format.DateFormat
 import android.view.View
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
@@ -17,20 +16,18 @@ import com.example.cocobeat.R
 import com.example.cocobeat.adapter.DevicesAdapter
 import com.example.cocobeat.databinding.ActivityDevicesBinding
 import com.example.cocobeat.fragment.DeviceListDialogFragment
+import com.example.cocobeat.fragment.ProgressDialog
 import com.example.cocobeat.model.*
 import com.example.cocobeat.repository.DeviceRepository
-import com.example.cocobeat.repository.ReadingRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import org.koin.android.ext.android.inject
-import org.koin.android.viewmodel.compat.SharedViewModelCompat.sharedViewModel
-import org.koin.android.viewmodel.ext.android.sharedViewModel
+
 import kotlin.coroutines.CoroutineContext
 
 
 class DevicesActivity : AppCompatActivity(), CoroutineScope, DevicesAdapter.OnItemClickListener {
-    private val deviceList = ArrayList<DeviceDataModel>()
     private var job: Job = Job()
     private lateinit var binding: ActivityDevicesBinding
     private val repository : DeviceRepository by inject()
@@ -55,7 +52,6 @@ class DevicesActivity : AppCompatActivity(), CoroutineScope, DevicesAdapter.OnIt
         var factory = DeviceViewModelFactory(repository)
         deviceViewModel = ViewModelProvider(this, factory)[DeviceViewModel::class.java]
 
-
         supportActionBar?.apply {
             displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
             setCustomView(R.layout.toolbar_device_list_title)
@@ -69,13 +65,12 @@ class DevicesActivity : AppCompatActivity(), CoroutineScope, DevicesAdapter.OnIt
         deviceViewModel.allDevices.observe(this@DevicesActivity, androidx.lifecycle.Observer {
             if(it.isNullOrEmpty()){
                 binding.emptyView.visibility = View.VISIBLE
-
                 binding.recyclerView.visibility = View.INVISIBLE
             }else {
                 binding.emptyView.visibility = View.INVISIBLE
                 binding.recyclerView.visibility = View.VISIBLE
                 binding.recyclerView.apply {
-                    adapter = DevicesAdapter(it, this@DevicesActivity)
+                    adapter = DevicesAdapter(it, this@DevicesActivity, false)
                     layoutManager = LinearLayoutManager(this@DevicesActivity)
                 }
             }
@@ -110,6 +105,12 @@ class DevicesActivity : AppCompatActivity(), CoroutineScope, DevicesAdapter.OnIt
 
     private fun openDeviceDialog() {
         var dialog = DeviceListDialogFragment()
+        dialog.setOnDialogCloseListener(object : DeviceListDialogFragment.DialogClosedListener {
+            override fun onClose(deviceName: String?) {
+                var progressDialog = ProgressDialog(deviceName)
+                progressDialog.show(supportFragmentManager, "deviceListDialogFragment")
+            }
+        })
         dialog.show(supportFragmentManager, "deviceListDialogFragment")
     }
 

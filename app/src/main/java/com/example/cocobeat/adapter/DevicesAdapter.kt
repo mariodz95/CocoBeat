@@ -6,22 +6,38 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cocobeat.database.entity.Device
 import com.example.cocobeat.databinding.DeviceRowItemBinding
+import com.example.cocobeat.databinding.DialogRowLayoutBinding
 import java.text.SimpleDateFormat
 
 
 class DevicesAdapter(
     private val deviceList: List<Device>,
-    private val listener: OnItemClickListener
+    private val listener: OnItemClickListener,
+    private val dialogLayout: Boolean
 ) : RecyclerView.Adapter<DevicesAdapter.ViewHolder>() {
 
     private var _binding: DeviceRowItemBinding? = null
-    private val binding get() = _binding!!
+    private var _dialogBinding: DialogRowLayoutBinding? = null
 
     //this method is returning the view for each item in the list
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        _binding = DeviceRowItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        val view = binding.root
-        return ViewHolder(view)
+        if(dialogLayout){
+            _dialogBinding = DialogRowLayoutBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+            val view = _dialogBinding!!.root
+            return ViewHolder(view)
+        }else {
+            _binding = DeviceRowItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+            val view = _binding!!.root
+            return ViewHolder(view)
+        }
     }
 
     //this method is binding the data on the list
@@ -49,11 +65,16 @@ class DevicesAdapter(
         }
 
         fun bindItems(device: Device) {
-            binding.deviceImage.setImageResource((device.imageResource))
-            binding.deviceName.text = device.name
-            if(device.lastSyncDate != null) {
-                val format = SimpleDateFormat("EEEE, MMMM d, yyyy 'at' h:mm a")
-                binding.deviceSyncDate.text = format.format(device.lastSyncDate.time)
+            if (dialogLayout) {
+                _dialogBinding?.deviceImage?.setImageResource((device.imageResource))
+                _dialogBinding?.deviceName?.text = device.name
+            } else {
+                _binding?.deviceImage?.setImageResource((device.imageResource))
+                _binding?.deviceName?.text = device.name
+                if (device.lastSyncDate != null) {
+                    val format = SimpleDateFormat("EEEE, MMMM d, yyyy 'at' h:mm a")
+                    _binding?.deviceSyncDate?.text = format.format(device.lastSyncDate.time)
+                }
             }
         }
     }

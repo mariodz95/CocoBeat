@@ -34,6 +34,8 @@ private lateinit var lastCharacteristicUUID : AbleUUID
 class AccuCheckDevice{
 
     lateinit var sync: SyncListener
+    lateinit var progress: ProgressListener
+
     var allReadings: MutableList<Reading> = mutableListOf<Reading>()
     lateinit var device: Device
     var hasReceivedNumOfReadings: Boolean  = false
@@ -42,6 +44,10 @@ class AccuCheckDevice{
 
     fun setOnSyncListener(listener: SyncListener) {
         sync = listener
+    }
+
+    fun setProgressListener(listener: ProgressListener) {
+        progress = listener
     }
 
      suspend fun scanForNearbyDevices(deviceName: String?) {
@@ -210,20 +216,23 @@ class AccuCheckDevice{
                             1000
                         }
 
+                        var dateTime: Calendar = Calendar.getInstance()
+
                         var reading = Reading(
                             UUID,
                             deviceModel.toString(),
-                            calendar.time,
+                            dateTime.time,
                             glucoseValue,
                             units,
                             cal.time
                         )
                         isEnd++
+                        progress.onProgress(isEnd, numberOfReadings)
 
                         allReadings.add(reading)
 
                         if(isEnd == numberOfReadings){
-                            device = Device(java.util.UUID.randomUUID(), serialNumber, calendar.time, "Accu-Chek", R.drawable.ic_launcher_background)
+                            device = Device(java.util.UUID.randomUUID(), serialNumber, dateTime.time, "Accu-Chek", R.drawable.ic_launcher_background)
                             sync.onSyncComplete(allReadings, device)
                         }
                     }
@@ -272,6 +281,10 @@ class AccuCheckDevice{
 
     interface SyncListener{
         fun onSyncComplete(allReadings: MutableList<Reading>, device: Device)
+    }
+
+    interface ProgressListener{
+        fun onProgress(progress: Int, numberOfReadings: Int)
     }
 
     private fun getTime(timeBytes: ByteArray): Calendar? {
