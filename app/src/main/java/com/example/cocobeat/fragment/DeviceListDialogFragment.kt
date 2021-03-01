@@ -15,13 +15,14 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cocobeat.R
 import com.example.cocobeat.adapter.DevicesAdapter
+import com.example.cocobeat.adapter.DevicesDialogAdapter
 import com.example.cocobeat.database.entity.Device
 import com.example.cocobeat.databinding.ActivityDeviceDialogBinding
 import kotlinx.coroutines.launch
 import java.util.*
 
 
-class DeviceListDialogFragment : DialogFragment(), DevicesAdapter.OnItemClickListener {
+class DeviceListDialogFragment : DialogFragment(), DevicesDialogAdapter.OnItemClickListener {
     private val deviceList = mutableListOf<Device>()
     private var _binding: ActivityDeviceDialogBinding? = null
     private val binding get() = _binding!!
@@ -59,7 +60,7 @@ class DeviceListDialogFragment : DialogFragment(), DevicesAdapter.OnItemClickLis
             )
         )
 
-        binding.recyclerViewDialog.adapter = DevicesAdapter(deviceList, this, true)
+        binding.recyclerViewDialog.adapter = DevicesDialogAdapter(deviceList, this)
 
         binding.buttonCancel.setOnClickListener{
             dialog?.dismiss()

@@ -4,16 +4,20 @@ import android.content.Intent
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ablelib.util.turnBluetoothOnIfOff
 import com.example.cocobeat.R
 import com.example.cocobeat.adapter.DevicesAdapter
+import com.example.cocobeat.database.entity.Device
 import com.example.cocobeat.databinding.ActivityDevicesBinding
 import com.example.cocobeat.fragment.DeviceListDialogFragment
 import com.example.cocobeat.fragment.ProgressDialog
@@ -23,7 +27,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import org.koin.android.ext.android.inject
-
 import kotlin.coroutines.CoroutineContext
 
 
@@ -32,6 +35,7 @@ class DevicesActivity : AppCompatActivity(), CoroutineScope, DevicesAdapter.OnIt
     private lateinit var binding: ActivityDevicesBinding
     private val repository : DeviceRepository by inject()
     private lateinit var deviceViewModel: DeviceViewModel
+    private lateinit var deviceList: List<Device>
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
@@ -63,14 +67,15 @@ class DevicesActivity : AppCompatActivity(), CoroutineScope, DevicesAdapter.OnIt
         }
 
         deviceViewModel.allDevices.observe(this@DevicesActivity, androidx.lifecycle.Observer {
-            if(it.isNullOrEmpty()){
+            if (it.isNullOrEmpty()) {
                 binding.emptyView.visibility = View.VISIBLE
                 binding.recyclerView.visibility = View.INVISIBLE
-            }else {
+            } else {
                 binding.emptyView.visibility = View.INVISIBLE
                 binding.recyclerView.visibility = View.VISIBLE
+                deviceList = it
                 binding.recyclerView.apply {
-                    adapter = DevicesAdapter(it, this@DevicesActivity, false)
+                    adapter = DevicesAdapter(it, this@DevicesActivity)
                     layoutManager = LinearLayoutManager(this@DevicesActivity)
                 }
             }
@@ -92,8 +97,8 @@ class DevicesActivity : AppCompatActivity(), CoroutineScope, DevicesAdapter.OnIt
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setMessage("Your GPS seems to be disabled, you need to enable it for device scanning")
                 .setCancelable(false)
-                .setPositiveButton("Yes"){_, _ -> startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))}
-                .setNegativeButton("No"){dialog, _ -> dialog.cancel()}
+                .setPositiveButton("Yes"){ _, _ -> startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))}
+                .setNegativeButton("No"){ dialog, _ -> dialog.cancel()}
         val alert: AlertDialog = builder.create()
         alert.show()
     }
@@ -114,8 +119,21 @@ class DevicesActivity : AppCompatActivity(), CoroutineScope, DevicesAdapter.OnIt
         dialog.show(supportFragmentManager, "deviceListDialogFragment")
     }
 
-    override fun onItemClick(position: Int) {
-        TODO("Not yet implemented")
+    override fun onItemClick(view: View, position: Int) {
+        Log.v("test", "view ${deviceList[position]}")
+        val popup = PopupMenu(this@DevicesActivity, view)
+        val device = deviceList[position]
+        popup.menuInflater.inflate(R.menu.popup_menu, popup.menu);
+        popup.setOnMenuItemClickListener { item ->
+            deviceViewModel.removeDevice(device)
+            Toast.makeText(
+                this@DevicesActivity,
+                "${device.name} is deleted!",
+                Toast.LENGTH_SHORT
+            ).show()
+            true
+        }
+        popup.show();
     }
 }
 

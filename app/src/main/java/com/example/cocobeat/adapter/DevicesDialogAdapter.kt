@@ -5,25 +5,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cocobeat.database.entity.Device
-import com.example.cocobeat.databinding.DeviceRowItemBinding
-import java.text.SimpleDateFormat
+import com.example.cocobeat.databinding.DialogRowLayoutBinding
 
+class DevicesDialogAdapter( private val deviceList: List<Device>,
+                            private val listener: OnItemClickListener)
+    : RecyclerView.Adapter<DevicesDialogAdapter.ViewHolder>(){
 
-class DevicesAdapter(
-    private val deviceList: List<Device>,
-    private val listener: OnItemClickListener
-) : RecyclerView.Adapter<DevicesAdapter.ViewHolder>() {
-
-    private var _binding: DeviceRowItemBinding? = null
+    private var _dialogBinding: DialogRowLayoutBinding? = null
 
     //this method is returning the view for each item in the list
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        _binding = DeviceRowItemBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
+        _dialogBinding = DialogRowLayoutBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
         )
-        val view = _binding!!.root
+        val view = _dialogBinding!!.root
         return ViewHolder(view)
     }
 
@@ -39,29 +36,25 @@ class DevicesAdapter(
 
     //the class is holding the list view
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-    View.OnClickListener{
+        View.OnClickListener{
         init{
-            _binding?.optionsBtn?.setOnClickListener(this)
+            itemView.setOnClickListener(this)
         }
 
-        override fun onClick(v: View) {
+        override fun onClick(v: View?) {
             val position: Int = adapterPosition
             if(position !=  RecyclerView.NO_POSITION) {
-                listener.onItemClick(v, position)
+                listener.onItemClick(position)
             }
         }
 
         fun bindItems(device: Device) {
-            _binding?.deviceImage?.setImageResource((device.imageResource))
-            _binding?.deviceName?.text = device.name
-            if (device.lastSyncDate != null) {
-                val format = SimpleDateFormat("EEEE, MMMM d, yyyy 'at' h:mm a")
-                _binding?.deviceSyncDate?.text = format.format(device.lastSyncDate.time)
-            }
+            _dialogBinding?.deviceImage?.setImageResource((device.imageResource))
+            _dialogBinding?.deviceName?.text = device.name
         }
     }
 
     interface OnItemClickListener{
-        fun onItemClick(view: View, position: Int)
+        fun onItemClick(position: Int)
     }
 }

@@ -1,10 +1,7 @@
 package com.example.cocobeat.database.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.cocobeat.database.entity.Device
 
 @Dao
@@ -14,4 +11,8 @@ interface DeviceDao {
 
     @Query("SELECT * FROM device")
     fun getAllDevices() : LiveData<List<Device>>
+
+
+    @Delete
+    fun deleteDevice(device: Device)
 }

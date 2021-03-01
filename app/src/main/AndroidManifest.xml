@@ -18,7 +18,7 @@
         android:theme="@style/Theme.CoCoBeat">
         <meta-data
             android:name="com.ablelib.LICENCE_KEY"
-            android:value="d062d6e6-5833-445d-a2bd-11820170cb53" />
+            android:value="4f50c067-3235-48f9-b444-248f1fb11cfc" />
         <activity
             android:name=".activity.DevicesActivity"
             android:label="@string/title_activity_devices"

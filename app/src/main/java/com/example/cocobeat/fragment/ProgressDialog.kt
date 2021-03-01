@@ -67,8 +67,8 @@ class ProgressDialog(private val deviceName: String?) : DialogFragment(){
 
 
     private fun insertToDatabase(allReadings: MutableList<Reading>, device: Device) {
-        mReadingViewModel.insertReadings(allReadings)
         mDeviceViewModel.insertDevice(device)
+        mReadingViewModel.insertReadings(allReadings)
         dialog?.dismiss()
     }
 

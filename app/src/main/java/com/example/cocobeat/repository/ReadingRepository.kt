@@ -18,6 +18,6 @@ class ReadingRepository(private val readingDao: ReadingDao){
     }
 
       fun insertReadings(readings: MutableList<Reading>){
-        readingDao.insertReadings(readings)
+          readingDao.insertReadings(readings)
     }
 }
