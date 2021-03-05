@@ -19,6 +19,7 @@ import com.example.cocobeat.R
 import com.example.cocobeat.adapter.DevicesAdapter
 import com.example.cocobeat.database.entity.Device
 import com.example.cocobeat.databinding.ActivityDevicesBinding
+import com.example.cocobeat.databinding.ToolbarDeviceListTitleBinding
 import com.example.cocobeat.fragment.DeviceListDialogFragment
 import com.example.cocobeat.fragment.ProgressDialog
 import com.example.cocobeat.model.*
@@ -33,6 +34,7 @@ import kotlin.coroutines.CoroutineContext
 class DevicesActivity : AppCompatActivity(), CoroutineScope, DevicesAdapter.OnItemClickListener {
     private var job: Job = Job()
     private lateinit var binding: ActivityDevicesBinding
+
     private val repository : DeviceRepository by inject()
     private lateinit var deviceViewModel: DeviceViewModel
     private lateinit var deviceList: List<Device>

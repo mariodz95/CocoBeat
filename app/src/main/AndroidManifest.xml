@@ -3,9 +3,9 @@
     package="com.example.cocobeat">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
@@ -16,13 +16,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CoCoBeat">
+        <activity android:name=".activity.CreateExerciseActivity" />
+        <activity android:name=".activity.ExerciseActivity" />
+
         <meta-data
             android:name="com.ablelib.LICENCE_KEY"
             android:value="4f50c067-3235-48f9-b444-248f1fb11cfc" />
+
         <activity
             android:name=".activity.DevicesActivity"
-            android:label="@string/title_activity_devices"
-           >
+            android:label="@string/title_activity_devices">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activity.MainActivity" />

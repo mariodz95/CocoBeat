@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.format.DateFormat
+import android.view.View
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -12,6 +13,7 @@ import com.example.cocobeat.databinding.ActivityMainBinding
 import com.example.cocobeat.model.ReadingViewModel
 import com.example.cocobeat.model.ReadingViewModelFactory
 import com.example.cocobeat.repository.ReadingRepository
+import com.example.cocobeat.util.Animation
 import com.example.cocobeat.util.Helper
 import com.example.cocobeat.view.MonthPicker
 import com.github.mikephil.charting.components.Legend
@@ -30,6 +32,7 @@ class MainActivity : AppCompatActivity(){
     private val repository : ReadingRepository by inject()
     private lateinit var readingViewModel: ReadingViewModel
     var dataExist: Boolean = false
+    var isRotate: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,9 +44,28 @@ class MainActivity : AppCompatActivity(){
             setCustomView(R.layout.toolbar_title_layout)
         }
 
-        binding.btnDevices.setOnClickListener{
+        val animation = Animation()
+        animation.init(binding.fabDevices)
+        animation.init(binding.fabExercise)
+
+        binding.fab.setOnClickListener(View.OnClickListener { v ->
+            isRotate = animation.rotateFab(v, !isRotate)
+            if (isRotate) {
+                animation.showIn(binding.fabExercise)
+                animation.showIn(binding.fabDevices)
+            } else {
+                animation.showOut(binding.fabExercise)
+                animation.showOut(binding.fabDevices)
+            }
+        })
+
+        binding.fabDevices.setOnClickListener(View.OnClickListener {
             openDevicesActivity()
-        }
+        })
+
+        binding.fabExercise.setOnClickListener(View.OnClickListener {
+            openExerciseActivity()
+        })
 
         var factory = ReadingViewModelFactory(repository)
         readingViewModel = ViewModelProvider(this, factory)[ReadingViewModel::class.java]
@@ -61,32 +83,41 @@ class MainActivity : AppCompatActivity(){
                 readingViewModel.loadMonthData(startDate.time, endDate.time)
 
                 readingViewModel.monthData?.observe(this@MainActivity, androidx.lifecycle.Observer {
-                    entries = arrayListOf<Entry>()
                     binding.chart.data = null
                     binding.chart.notifyDataSetChanged()
                     binding.chart.invalidate()
 
                     if (it.isNotEmpty()) {
-                        val grouped = it.groupBy { DateFormat.format("dd", it.readingDate) }.mapValues { helper.calculateAverage(it.value.map { it.value }) }
+                        val grouped =
+                            it.groupBy { DateFormat.format("dd", it.readingDate) }.mapValues {
+                                helper.calculateAverage(
+                                    it.value.map { it.value })
+                            }
                         drawLineGraph(grouped, entries)
                         dataExist = true
-                    }else if(it.isEmpty() && !dataExist){
-                        readingViewModel.lastReading?.observe(this@MainActivity, androidx.lifecycle.Observer {
-                            if(it !== null) {
-                                var year: Int = DateFormat.format("yyyy", it.readingDate).toString().toInt()
-                                var month: Int = DateFormat.format("M", it.readingDate).toString().toInt()
-                                binding.monthPickerView.setMonthAndYear(month, year)
-                            }
-                        })
+                    } else if (it.isEmpty() && !dataExist) {
+                        readingViewModel.lastReading.observe(
+                            this@MainActivity,
+                            androidx.lifecycle.Observer {
+                                if (it !== null) {
+                                    var year: Int =
+                                        DateFormat.format("yyyy", it.readingDate).toString().toInt()
+                                    var month: Int =
+                                        DateFormat.format("M", it.readingDate).toString().toInt()
+                                    binding.monthPickerView.setMonthAndYear(month, year)
+                                }
+                            })
                     }
                 })
             }
         })
     }
 
-    private fun drawLineGraph(grouped:  Map<CharSequence, Double>, entries: ArrayList<Entry>){
+
+
+    private fun drawLineGraph(grouped: Map<CharSequence, Double>, entries: ArrayList<Entry>){
         for ((key, value) in grouped) {
-            entries.add (Entry(key.toString().toFloat(), value.toFloat()))
+            entries.add(Entry(key.toString().toFloat(), value.toFloat()))
         }
 
         val dataSet = LineDataSet(entries, "")
@@ -123,6 +154,11 @@ class MainActivity : AppCompatActivity(){
 
     private fun openDevicesActivity() {
         val intent = Intent(this, DevicesActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun openExerciseActivity() {
+        val intent = Intent(this, ExerciseActivity::class.java)
         startActivity(intent)
     }
 }

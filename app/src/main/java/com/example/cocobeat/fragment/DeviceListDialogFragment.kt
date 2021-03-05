@@ -14,7 +14,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.cocobeat.R
-import com.example.cocobeat.adapter.DevicesAdapter
 import com.example.cocobeat.adapter.DevicesDialogAdapter
 import com.example.cocobeat.database.entity.Device
 import com.example.cocobeat.databinding.ActivityDeviceDialogBinding

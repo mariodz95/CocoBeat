@@ -13,4 +13,14 @@
     <string name="devices">Devices</string>
     <string name="textview">TextView</string>
     <string name="no_data_available">No data available</string>
+    <string name="open">Open</string>
+    <string name="Exercise">Exercise</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="add_exercise">Add Exercise</string>
+    <string name="title_activity_main2">MainActivity2</string>
+    <string name="tab_text_1">Recent</string>
+    <string name="tab_text_2">Frequent</string>
+    <string name="cancel">CANCEL</string>
+    <string name="ok">OK</string>
 </resources>
