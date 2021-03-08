@@ -16,6 +16,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CoCoBeat">
+        <activity
+            android:name=".activity.MainActivity2"
+            android:label="@string/title_activity_main2"
+            android:theme="@style/Theme.CoCoBeat.NoActionBar"></activity>
         <activity android:name=".activity.CreateExerciseActivity" />
         <activity android:name=".activity.ExerciseActivity" />
 

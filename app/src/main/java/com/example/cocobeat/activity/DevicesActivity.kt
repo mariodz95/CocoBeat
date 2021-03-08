@@ -4,7 +4,6 @@ import android.content.Intent
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
@@ -19,7 +18,6 @@ import com.example.cocobeat.R
 import com.example.cocobeat.adapter.DevicesAdapter
 import com.example.cocobeat.database.entity.Device
 import com.example.cocobeat.databinding.ActivityDevicesBinding
-import com.example.cocobeat.databinding.ToolbarDeviceListTitleBinding
 import com.example.cocobeat.fragment.DeviceListDialogFragment
 import com.example.cocobeat.fragment.ProgressDialog
 import com.example.cocobeat.model.*
@@ -122,7 +120,6 @@ class DevicesActivity : AppCompatActivity(), CoroutineScope, DevicesAdapter.OnIt
     }
 
     override fun onItemClick(view: View, position: Int) {
-        Log.v("test", "view ${deviceList[position]}")
         val popup = PopupMenu(this@DevicesActivity, view)
         val device = deviceList[position]
         popup.menuInflater.inflate(R.menu.popup_menu, popup.menu);

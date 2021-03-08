@@ -17,7 +17,7 @@ class ReadingRepository(private val readingDao: ReadingDao){
         return allData
     }
 
-      fun insertReadings(readings: MutableList<Reading>){
+    fun insertReadings(readings: MutableList<Reading>){
           readingDao.insertReadings(readings)
     }
 }
