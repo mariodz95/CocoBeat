@@ -11,6 +11,7 @@ class ReadingRepository(private val readingDao: ReadingDao){
     var allData: LiveData<List<Reading>>? = null
     var lastReading: LiveData<Reading> = readingDao.getLastReading()
 
+    var readings: LiveData<List<Reading>>? = null
 
      fun getMonthData(startDate: Date, endDate: Date) : LiveData<List<Reading>>? {
         allData = readingDao.getAllReadings(startDate, endDate)
@@ -19,5 +20,10 @@ class ReadingRepository(private val readingDao: ReadingDao){
 
     fun insertReadings(readings: MutableList<Reading>){
           readingDao.insertReadings(readings)
+    }
+
+    fun getAllReadings() : LiveData<List<Reading>>? {
+        readings = readingDao.getReadings()
+        return readings
     }
 }

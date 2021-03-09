@@ -3,6 +3,7 @@ package com.example.cocobeat.fragment
 import android.R
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.sharedViewModel
+import java.lang.Exception
 
 
 class ProgressDialog(private val deviceName: String?) : DialogFragment(){
@@ -68,7 +70,12 @@ class ProgressDialog(private val deviceName: String?) : DialogFragment(){
 
     private fun insertToDatabase(allReadings: MutableList<Reading>, device: Device) {
         mDeviceViewModel.insertDevice(device)
-        mReadingViewModel.insertReadings(allReadings)
+        try {
+            mReadingViewModel.insertReadings(allReadings)
+        }catch (e: Exception)
+        {
+            Log.v("test", " ee $e")
+        }
         dialog?.dismiss()
     }
 

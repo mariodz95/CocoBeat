@@ -15,4 +15,7 @@ interface ReadingDao {
 
     @Query("SELECT * FROM reading ORDER BY ID DESC LIMIT 1")
     fun getLastReading() : LiveData<Reading>
+
+    @Query("SELECT * FROM reading ORDER BY date_added DESC")
+    fun getReadings() : LiveData<List<Reading>>
 }

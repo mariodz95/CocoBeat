@@ -23,4 +23,5 @@
     <string name="tab_text_2">Frequent</string>
     <string name="cancel">CANCEL</string>
     <string name="ok">OK</string>
+    <string name="history">History</string>
 </resources>

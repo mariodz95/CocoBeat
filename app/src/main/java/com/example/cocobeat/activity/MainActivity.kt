@@ -67,6 +67,10 @@ class MainActivity : AppCompatActivity(){
             openExerciseActivity()
         })
 
+        binding.btnHistory.setOnClickListener {
+            openHistoryActivity()
+        }
+
         var factory = ReadingViewModelFactory(repository)
         readingViewModel = ViewModelProvider(this, factory)[ReadingViewModel::class.java]
 
@@ -83,6 +87,7 @@ class MainActivity : AppCompatActivity(){
                 readingViewModel.loadMonthData(startDate.time, endDate.time)
 
                 readingViewModel.monthData?.observe(this@MainActivity, androidx.lifecycle.Observer {
+                    entries = arrayListOf<Entry>()
                     binding.chart.data = null
                     binding.chart.notifyDataSetChanged()
                     binding.chart.invalidate()
@@ -107,8 +112,8 @@ class MainActivity : AppCompatActivity(){
                                     binding.monthPickerView.setMonthAndYear(month, year)
                                 }
                             })
-                    }
-                })
+                        }
+                    })
             }
         })
     }
@@ -159,6 +164,11 @@ class MainActivity : AppCompatActivity(){
 
     private fun openExerciseActivity() {
         val intent = Intent(this, ExerciseActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun openHistoryActivity() {
+        val intent = Intent(this, HistoryActivity::class.java)
         startActivity(intent)
     }
 }

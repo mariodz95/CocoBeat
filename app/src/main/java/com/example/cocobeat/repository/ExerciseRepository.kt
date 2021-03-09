@@ -9,6 +9,8 @@ class ExerciseRepository(private val exerciseDao: ExerciseDao) {
     private var recentExercise: LiveData<List<Exercise>>? = null
     private var frequentExercise: LiveData<List<Exercise>>? = null
 
+    private var exercises: LiveData<List<Exercise>>? = null
+
     fun insertExercise(exercise: Exercise){
         exerciseDao.insertExercise(exercise)
     }
@@ -25,5 +27,10 @@ class ExerciseRepository(private val exerciseDao: ExerciseDao) {
 
     fun insertExercises(exercises: MutableList<Exercise>){
         exerciseDao.insertExercises(exercises)
+    }
+
+    fun getAllExercises() : LiveData<List<Exercise>>? {
+        exercises = exerciseDao.getAllExercises()
+        return exercises
     }
 }

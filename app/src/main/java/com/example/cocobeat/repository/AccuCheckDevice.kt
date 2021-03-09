@@ -232,7 +232,7 @@ class AccuCheckDevice{
                         allReadings.add(reading)
 
                         if(isEnd == numberOfReadings){
-                            device = Device(java.util.UUID.randomUUID(), serialNumber, dateTime.time, "Accu-Chek", R.drawable.ic_launcher_background)
+                            device = Device(java.util.UUID.randomUUID(), deviceModel.toString(), dateTime.time, "Accu-Chek", R.drawable.ic_launcher_background)
                             sync.onSyncComplete(allReadings, device)
                         }
                     }
