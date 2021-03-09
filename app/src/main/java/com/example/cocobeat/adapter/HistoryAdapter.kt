@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cocobeat.R
 import com.example.cocobeat.databinding.HistoryRowLayoutBinding
 import com.example.cocobeat.model.HistoryItem
+import com.example.cocobeat.util.HistoryItemType
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.SimpleDateFormat
@@ -50,14 +51,14 @@ class HistoryAdapter(
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         fun bindItems(historyItem: HistoryItem) {
             val format = SimpleDateFormat("MMMM d, yyyy")
-            if (historyItem.type == "Reading") {
+            if (historyItem.type == HistoryItemType.READING) {
                 _binding?.imageView?.setBackgroundResource(R.drawable.ic_baseline_bloodtype_24)
                 _binding?.txtName?.text = "${BigDecimal(historyItem.value!!).setScale(
                     2,
                     RoundingMode.HALF_EVEN
                 )} ${historyItem.unit}"
                 _binding?.txtDate?.text = "${format.format(historyItem.date)}"
-            } else if (historyItem.type == "Exercise") {
+            } else if (historyItem.type == HistoryItemType.EXERCISE) {
                 _binding?.imageView?.setBackgroundResource(R.drawable.ic_baseline_directions_run_24)
                 _binding?.txtName?.text =
                     "${historyItem.name} ${historyItem.hourDuration} hour ${historyItem.minuteDuration}"

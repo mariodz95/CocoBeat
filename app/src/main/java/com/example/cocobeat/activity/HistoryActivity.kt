@@ -11,9 +11,9 @@ import com.example.cocobeat.databinding.ActivityHistoryBinding
 import com.example.cocobeat.model.*
 import com.example.cocobeat.repository.ExerciseRepository
 import com.example.cocobeat.repository.ReadingRepository
+import com.example.cocobeat.util.HistoryItemType
 import org.koin.android.ext.android.inject
 import java.util.*
-import kotlin.Comparator
 
 class HistoryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHistoryBinding
@@ -48,7 +48,7 @@ class HistoryActivity : AppCompatActivity() {
         readingViewModel.readings?.observe(this@HistoryActivity, androidx.lifecycle.Observer {
             for (reading in it) {
                 val item: HistoryItem = HistoryItem(
-                    "Reading",
+                    HistoryItemType.READING,
                     reading.dateAdded,
                     reading.value,
                     reading.units,
@@ -72,7 +72,7 @@ class HistoryActivity : AppCompatActivity() {
         exerciseViewModel.exercises?.observe(this@HistoryActivity, androidx.lifecycle.Observer {
             for (exercise in it) {
                 val item: HistoryItem = HistoryItem(
-                    "Exercise",
+                    HistoryItemType.EXERCISE,
                     exercise.dateAdded,
                     null,
                     null,
