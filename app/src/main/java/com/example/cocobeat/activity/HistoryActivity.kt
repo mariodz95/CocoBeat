@@ -50,11 +50,8 @@ class HistoryActivity : AppCompatActivity() {
                 val item: HistoryItem = HistoryItem(
                     HistoryItemType.READING,
                     reading.dateAdded,
-                    reading.value,
-                    reading.units,
-                    null,
-                    null,
-                    null
+                    reading.value.toString(),
+                    reading.units
                 )
                 historyItems?.add(item)
             }
@@ -64,7 +61,6 @@ class HistoryActivity : AppCompatActivity() {
 
             binding.historyRecyclerView.apply {
                 layoutManager = LinearLayoutManager(this@HistoryActivity)
-
                 adapter = HistoryAdapter(orderedArray)
             }
         })
@@ -74,11 +70,8 @@ class HistoryActivity : AppCompatActivity() {
                 val item: HistoryItem = HistoryItem(
                     HistoryItemType.EXERCISE,
                     exercise.dateAdded,
-                    null,
-                    null,
-                    exercise.exerciseName,
-                    exercise.hourDuration,
-                    exercise.minuteDuration
+                    "${exercise.exerciseName} ${exercise.hourDuration!! * 60 + exercise.minuteDuration!!}",
+                    "minutes"
                 )
                 historyItems?.add(item)
             }

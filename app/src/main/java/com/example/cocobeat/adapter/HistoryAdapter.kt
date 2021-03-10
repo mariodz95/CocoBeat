@@ -60,8 +60,7 @@ class HistoryAdapter(
                 _binding?.txtDate?.text = "${format.format(historyItem.date)}"
             } else if (historyItem.type == HistoryItemType.EXERCISE) {
                 _binding?.imageView?.setBackgroundResource(R.drawable.ic_baseline_directions_run_24)
-                _binding?.txtName?.text =
-                    "${historyItem.name} ${historyItem.hourDuration} hour ${historyItem.minuteDuration}"
+                _binding?.txtName?.text = "${historyItem.value} ${historyItem.unit}"
                 _binding?.txtDate?.text = "${format.format(historyItem.date)}"
             }
         }
