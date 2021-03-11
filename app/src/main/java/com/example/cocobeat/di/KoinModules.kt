@@ -10,10 +10,12 @@ import com.example.cocobeat.database.dao.ReadingDao
 import com.example.cocobeat.database.AppDatabase
 import com.example.cocobeat.database.dao.DeviceDao
 import com.example.cocobeat.database.dao.ExerciseDao
+import com.example.cocobeat.database.dao.StepDao
 import com.example.cocobeat.model.*
 import com.example.cocobeat.repository.DeviceRepository
 import com.example.cocobeat.repository.ExerciseRepository
 import com.example.cocobeat.repository.ReadingRepository
+import com.example.cocobeat.repository.StepRepository
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -35,6 +37,9 @@ val viewModule = module{
     viewModel {
         ExerciseViewModel(get())
     }
+    viewModel {
+        StepViewModel(get())
+    }
 }
 
 val factoryModule = module{
@@ -42,6 +47,7 @@ val factoryModule = module{
         ReadingViewModelFactory(get())
         DeviceViewModelFactory(get())
         ExerciseViewModelFactory(get())
+        StepViewModelFactory(get())
     }
 }
 
@@ -66,10 +72,15 @@ val databaseModule = module {
         return database.exerciseDao()
     }
 
+    fun provideStepDao(database: AppDatabase): StepDao {
+        return database.stepDao()
+    }
+
     single { provideDatabase(androidApplication()) }
     single { provideDao(get()) }
     single { provideDeviceDao(get()) }
     single { provideExerciseDao(get()) }
+    single { provideStepDao(get()) }
 }
 
 val repositoryModule = module {
@@ -81,17 +92,16 @@ val repositoryModule = module {
         return DeviceRepository(deviceDao)
     }
 
-    fun provideExerciseDao(exerciseDao: ExerciseDao): ExerciseRepository {
+    fun provideExerciseRepository(exerciseDao: ExerciseDao): ExerciseRepository {
         return ExerciseRepository(exerciseDao)
     }
 
-    single {
-        provideReadingRepository(get())
+    fun provideSteRepository(stepDao: StepDao): StepRepository {
+        return StepRepository(stepDao)
     }
-    single {
-        provideDeviceRepository(get())
-    }
-    single {
-        provideExerciseDao(get())
-    }
+
+    single { provideReadingRepository(get()) }
+    single { provideDeviceRepository(get()) }
+    single { provideExerciseRepository(get()) }
+    single { provideSteRepository(get()) }
 }
