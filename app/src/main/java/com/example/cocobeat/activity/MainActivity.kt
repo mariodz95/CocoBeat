@@ -61,7 +61,6 @@ class MainActivity : AppCompatActivity(){
     var dataExist: Boolean = false
     var isRotate: Boolean = false
     var connect: Boolean = true
-    var first: Boolean = true
 
     private lateinit var fitnessOptions: FitnessOptions
     private val stepList: MutableList<Step> = mutableListOf()
@@ -343,8 +342,7 @@ class MainActivity : AppCompatActivity(){
                 } else {
                     val dateOne = LocalDateTime.parse(lastStep?.dateEnded).toLocalDate()
                     val dateTwo = LocalDateTime.parse(step?.dateEnded).toLocalDate()
-                    if (dateOne == dateTwo && first && step.steps != 0) {
-                        first = false
+                    if (dateOne == dateTwo && step.steps != 0) {
                         val newSteps: Int = step.steps!! + lastStep!!.steps!!
                         stepViewModel.updateStep(newSteps, step.dateEnded.toString(), lastStep!!.id)
                     } else if(dateOne != dateTwo){
