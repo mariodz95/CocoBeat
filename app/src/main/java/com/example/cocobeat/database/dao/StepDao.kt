@@ -15,4 +15,7 @@ interface StepDao {
 
     @Query("UPDATE step SET steps = :newSteps, date_ended = :dateEnded WHERE id = :id")
     fun updateStep(newSteps: Int, dateEnded: String, id: UUID)
+
+    @Query("SELECT * FROM step WHERE date_started >= DateTime(:startDate) AND date_ended <= DateTime(:endDate)")
+    fun getMonthSteps(startDate: String, endDate: String) : LiveData<List<Step>>
 }

@@ -37,13 +37,11 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
-import com.google.android.gms.fitness.HistoryClient
 import com.google.android.gms.fitness.data.*
 import com.google.android.gms.fitness.request.DataReadRequest
 import org.koin.android.ext.android.inject
 import java.text.SimpleDateFormat
 import java.time.Instant
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
@@ -65,6 +63,7 @@ class MainActivity : AppCompatActivity(){
     private lateinit var fitnessOptions: FitnessOptions
     private val stepList: MutableList<Step> = mutableListOf()
     private var lastStep: Step? = null
+    var sum = 0
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,6 +82,45 @@ class MainActivity : AppCompatActivity(){
             setCustomView(R.layout.toolbar_title_layout)
         }
 
+        val prefs = getSharedPreferences("SETTINGS", MODE_PRIVATE)
+        val monthSteps = prefs.getInt("monthSteps", 0)
+
+        if(monthSteps == null){
+            val editor = getSharedPreferences("SETTINGS", MODE_PRIVATE).edit()
+            editor.putInt("monthSteps", 150000)
+            editor.apply()
+        }
+
+        val calendar = Calendar.getInstance()
+        calendar[Calendar.HOUR_OF_DAY] = 0
+        calendar.clear(Calendar.MINUTE)
+        calendar.clear(Calendar.SECOND)
+        calendar.clear(Calendar.MILLISECOND)
+        // get start of the month
+        calendar.set(Calendar.DAY_OF_MONTH, 1)
+        var startDate: Date= calendar.time
+        val sdf = SimpleDateFormat("YYYY-MM-dd HH:mm:ss")
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
+        val startDateString = sdf.format(startDate).toString()
+        val endDateString = sdf.format(calendar.time).toString()
+
+        stepViewModel.getMonthData(startDateString, endDateString)
+        stepViewModel.monthSteps?.observe(this, androidx.lifecycle.Observer {
+            sum = 0
+            for (step in it) {
+                sum += step.steps!!
+            }
+            binding.progressBar.progress = sum
+            binding.currentProgress.text = "$sum/$monthSteps steps"
+            binding.progressBar.max = monthSteps
+        })
+
+        binding.progressBar.max = monthSteps
+
+        binding.settings.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+        }
 
         stepViewModel.lastStep.observe(this, androidx.lifecycle.Observer {
             lastStep = it

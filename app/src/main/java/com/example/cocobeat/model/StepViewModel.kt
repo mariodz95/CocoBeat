@@ -8,6 +8,7 @@ import java.util.*
 
 class StepViewModel(private val repository: StepRepository) : ViewModel() {
     var lastStep: LiveData<Step> = repository.lastStep
+    var monthSteps: LiveData<List<Step>>? = null
 
     fun insertSteps(steps: MutableList<Step>){
         repository.insertSteps(steps)
@@ -15,5 +16,9 @@ class StepViewModel(private val repository: StepRepository) : ViewModel() {
 
     fun updateStep(newSteps: Int, dateEnded: String, id: UUID){
         repository.updateStep(newSteps, dateEnded, id)
+    }
+
+    fun getMonthData(dateStarted: String, dateEnded: String){
+        monthSteps = repository.getMonthData(dateStarted, dateEnded)
     }
 }
