@@ -5,11 +5,13 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
@@ -19,10 +21,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.cocobeat.R
 import com.example.cocobeat.database.entity.Step
 import com.example.cocobeat.databinding.ActivityMainBinding
-import com.example.cocobeat.model.ReadingViewModel
-import com.example.cocobeat.model.ReadingViewModelFactory
-import com.example.cocobeat.model.StepViewModel
-import com.example.cocobeat.model.StepViewModelFactory
+import com.example.cocobeat.model.*
+import com.example.cocobeat.repository.OpenWeatherRepository
 import com.example.cocobeat.repository.ReadingRepository
 import com.example.cocobeat.repository.StepRepository
 import com.example.cocobeat.util.Animation
@@ -39,7 +39,10 @@ import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
 import com.google.android.gms.fitness.data.*
 import com.google.android.gms.fitness.request.DataReadRequest
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import org.koin.android.ext.android.inject
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDateTime
@@ -48,6 +51,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
+private const val API_KEY = "e75432998d51f673625612657db79aa1"
 
 class MainActivity : AppCompatActivity(){
     private lateinit var binding: ActivityMainBinding
@@ -56,6 +60,10 @@ class MainActivity : AppCompatActivity(){
 
     private val stepRepository : StepRepository by inject()
     private lateinit var stepViewModel: StepViewModel
+
+    private val openWeatherRepository : OpenWeatherRepository by inject()
+    private lateinit var mainActivityViewModel: MainActivityViewModel
+
     var dataExist: Boolean = false
     var isRotate: Boolean = false
     var connect: Boolean = true
@@ -64,6 +72,8 @@ class MainActivity : AppCompatActivity(){
     private val stepList: MutableList<Step> = mutableListOf()
     private var lastStep: Step? = null
     var sum = 0
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,16 +87,43 @@ class MainActivity : AppCompatActivity(){
         var stepFactory = StepViewModelFactory(stepRepository)
         stepViewModel = ViewModelProvider(this, stepFactory)[StepViewModel::class.java]
 
+        var openWeatherFactory = MainActivityViewModelFactory(openWeatherRepository)
+        mainActivityViewModel = ViewModelProvider(this, openWeatherFactory)[MainActivityViewModel::class.java]
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location : Location? ->
+                if(location != null){
+                    val url: String = ("/data/2.5/weather?lat=${location?.latitude}&lon=${location?.longitude}&appid=$API_KEY")
+                    mainActivityViewModel.getTemperature(url)
+                }
+            }
+
+        mainActivityViewModel.temperature.observe(this, androidx.lifecycle.Observer {
+            if (it.isSuccessful) {
+                val decimal = DecimalFormat("0.00")
+                val temperature: Double = it.body()?.main?.temp!! - 273.15
+                binding.temperature.text = ("${decimal.format((it.body()?.main?.temp!! - 273.15))} °C")
+
+                if(temperature > 7 && temperature < 20) {
+                    val toast = Toast.makeText(applicationContext, "Good time for running!",  Toast.LENGTH_LONG)
+                    toast.show()
+                }
+            }
+        })
+
         supportActionBar?.apply {
             displayOptions = ActionBar.DISPLAY_SHOW_CUSTOM
             setCustomView(R.layout.toolbar_title_layout)
         }
 
         val prefs = getSharedPreferences("SETTINGS", MODE_PRIVATE)
-        val monthSteps = prefs.getInt("monthSteps", 0)
+        var monthSteps = prefs.getInt("monthSteps", 0)
 
-        if(monthSteps == null){
+        if(monthSteps == 0){
             val editor = getSharedPreferences("SETTINGS", MODE_PRIVATE).edit()
+            monthSteps = 150000
             editor.putInt("monthSteps", 150000)
             editor.apply()
         }
@@ -96,7 +133,7 @@ class MainActivity : AppCompatActivity(){
         calendar.clear(Calendar.MINUTE)
         calendar.clear(Calendar.SECOND)
         calendar.clear(Calendar.MILLISECOND)
-        // get start of the month
+
         calendar.set(Calendar.DAY_OF_MONTH, 1)
         var startDate: Date= calendar.time
         val sdf = SimpleDateFormat("YYYY-MM-dd HH:mm:ss")
@@ -115,6 +152,7 @@ class MainActivity : AppCompatActivity(){
             binding.progressBar.max = monthSteps
         })
 
+        binding.currentProgress.text = "$sum/$monthSteps steps"
         binding.progressBar.max = monthSteps
 
         binding.settings.setOnClickListener {

@@ -12,10 +12,7 @@ import com.example.cocobeat.database.dao.DeviceDao
 import com.example.cocobeat.database.dao.ExerciseDao
 import com.example.cocobeat.database.dao.StepDao
 import com.example.cocobeat.model.*
-import com.example.cocobeat.repository.DeviceRepository
-import com.example.cocobeat.repository.ExerciseRepository
-import com.example.cocobeat.repository.ReadingRepository
-import com.example.cocobeat.repository.StepRepository
+import com.example.cocobeat.repository.*
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -40,6 +37,9 @@ val viewModule = module{
     viewModel {
         StepViewModel(get())
     }
+    viewModel {
+        MainActivityViewModel(get())
+    }
 }
 
 val factoryModule = module{
@@ -48,6 +48,7 @@ val factoryModule = module{
         DeviceViewModelFactory(get())
         ExerciseViewModelFactory(get())
         StepViewModelFactory(get())
+        MainActivityViewModelFactory(get())
     }
 }
 
@@ -100,8 +101,12 @@ val repositoryModule = module {
         return StepRepository(stepDao)
     }
 
+    fun provideOpenWeatherRepository(): OpenWeatherRepository {
+        return OpenWeatherRepository()
+    }
     single { provideReadingRepository(get()) }
     single { provideDeviceRepository(get()) }
     single { provideExerciseRepository(get()) }
     single { provideSteRepository(get()) }
+    single { provideOpenWeatherRepository() }
 }

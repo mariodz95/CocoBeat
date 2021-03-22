@@ -46,6 +46,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
     buildFeatures {
         viewBinding true
@@ -67,6 +68,7 @@ dependencies {
     implementation 'androidx.exifinterface:exifinterface:1.2.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation "com.ablelib:ableLib:1.0.0"
 
@@ -144,6 +146,16 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-fitness:20.0.0'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
+
+
+    def version_retrofit = "2.9.0"
+
+
+    implementation "com.squareup.retrofit2:retrofit:$version_retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:2.6.0"
+
+    implementation "com.squareup.retrofit2:converter-moshi:$version_retrofit"
+
 }
 
 
