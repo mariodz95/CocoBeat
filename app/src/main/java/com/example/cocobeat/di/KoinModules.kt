@@ -6,11 +6,8 @@ import com.ablelib.manager.AbleManager
 import com.ablelib.manager.IAbleManager
 import com.ablelib.storage.AbleDeviceStorage
 import com.ablelib.storage.IAbleDeviceStorage
-import com.example.cocobeat.database.dao.ReadingDao
 import com.example.cocobeat.database.AppDatabase
-import com.example.cocobeat.database.dao.DeviceDao
-import com.example.cocobeat.database.dao.ExerciseDao
-import com.example.cocobeat.database.dao.StepDao
+import com.example.cocobeat.database.dao.*
 import com.example.cocobeat.model.*
 import com.example.cocobeat.repository.*
 import org.koin.android.ext.koin.androidApplication
@@ -34,11 +31,17 @@ val viewModule = module{
     viewModel {
         ExerciseViewModel(get())
     }
+
     viewModel {
         StepViewModel(get())
     }
+
     viewModel {
         MainActivityViewModel(get())
+    }
+
+    viewModel {
+        FoodViewModel(get())
     }
 }
 
@@ -49,6 +52,7 @@ val factoryModule = module{
         ExerciseViewModelFactory(get())
         StepViewModelFactory(get())
         MainActivityViewModelFactory(get())
+        FoodViewModelFactory(get())
     }
 }
 
@@ -77,11 +81,16 @@ val databaseModule = module {
         return database.stepDao()
     }
 
+    fun provideFoodDao(database: AppDatabase): FoodDao {
+        return database.foodDao()
+    }
+
     single { provideDatabase(androidApplication()) }
     single { provideDao(get()) }
     single { provideDeviceDao(get()) }
     single { provideExerciseDao(get()) }
     single { provideStepDao(get()) }
+    single { provideFoodDao(get()) }
 }
 
 val repositoryModule = module {
@@ -104,9 +113,15 @@ val repositoryModule = module {
     fun provideOpenWeatherRepository(): OpenWeatherRepository {
         return OpenWeatherRepository()
     }
+
+    fun provideFoodRepository(foodDao: FoodDao): FoodRepository {
+        return FoodRepository(foodDao)
+    }
+
     single { provideReadingRepository(get()) }
     single { provideDeviceRepository(get()) }
     single { provideExerciseRepository(get()) }
     single { provideSteRepository(get()) }
     single { provideOpenWeatherRepository() }
+    single { provideFoodRepository(get()) }
 }

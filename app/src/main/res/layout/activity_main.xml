@@ -137,4 +137,18 @@
         app:layout_constraintBottom_toTopOf="@+id/fabDevices"
         app:layout_constraintEnd_toEndOf="@+id/fabDevices"
         app:layout_constraintStart_toStartOf="@+id/fabDevices"/>
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabFood"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="10dp"
+        app:fabSize="mini"
+        android:src="@drawable/ic_baseline_fastfood_24"
+        app:backgroundTint="@android:color/holo_orange_dark"
+        app:layout_constraintBottom_toTopOf="@+id/fabFitData"
+        app:layout_constraintEnd_toEndOf="@+id/fabFitData"
+        app:layout_constraintStart_toStartOf="@+id/fabFitData"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

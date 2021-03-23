@@ -66,12 +66,11 @@ class CreateExerciseActivity : AppCompatActivity() {
 
         val doneBtn: Toolbar = findViewById(R.id.done)
         doneBtn.setOnClickListener{
-
             var name: String = binding.nameTextInput.text.toString()
             var exercise = Exercise(UUID.randomUUID(), name, hour, minute, mDate, mTime)
             if(name.isEmpty()){
                 binding.nameTextInput.error = "Name is required!"
-                binding.nameTextInput.hint = "Name duration is required"
+                binding.nameTextInput.hint = "Name is required"
                 binding.nameTextInput.setHintTextColor(Color.parseColor("#FF0303"))
             }else if(hour == 0 && minute == 0)
             {
@@ -100,3 +99,4 @@ class CreateExerciseActivity : AppCompatActivity() {
         dialog.show(supportFragmentManager, "deviceListDialogFragment")
     }
 }
+

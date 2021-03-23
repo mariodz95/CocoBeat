@@ -171,6 +171,7 @@ class MainActivity : AppCompatActivity(){
         animation.init(binding.fabDevices)
         animation.init(binding.fabExercise)
         animation.init(binding.fabFitData)
+        animation.init(binding.fabFood)
 
         binding.fab.setOnClickListener(View.OnClickListener { v ->
             isRotate = animation.rotateFab(v, !isRotate)
@@ -178,10 +179,12 @@ class MainActivity : AppCompatActivity(){
                 animation.showIn(binding.fabExercise)
                 animation.showIn(binding.fabDevices)
                 animation.showIn(binding.fabFitData)
+                animation.showIn(binding.fabFood)
             } else {
                 animation.showOut(binding.fabExercise)
                 animation.showOut(binding.fabDevices)
                 animation.showOut(binding.fabFitData)
+                animation.showIn(binding.fabFood)
             }
         })
 
@@ -207,6 +210,10 @@ class MainActivity : AppCompatActivity(){
                 )
             }
             connectToGoogleFitApi()
+        }
+
+        binding.fabFood.setOnClickListener{
+            openFoodFormActivity()
         }
 
         binding.btnHistory.setOnClickListener {
@@ -308,6 +315,11 @@ class MainActivity : AppCompatActivity(){
 
     private fun openHistoryActivity() {
         val intent = Intent(this, HistoryActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun openFoodFormActivity(){
+        val intent = Intent(this, FoodFormActivity::class.java)
         startActivity(intent)
     }
 
