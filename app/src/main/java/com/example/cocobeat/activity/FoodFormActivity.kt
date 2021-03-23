@@ -1,7 +1,6 @@
 package com.example.cocobeat.activity
 
 import android.Manifest
-import android.R.attr
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -15,6 +14,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -133,8 +133,11 @@ class FoodFormActivity : AppCompatActivity() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if(requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK){
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            // There are no request codes
+            val data: Intent? = result.data
+            Log.v("test", "data $data")
             val takenImage = BitmapFactory.decodeFile(currentPhotoPath)
             val exif = ExifInterface(currentPhotoPath!!)
             val orientation: Int = exif.getAttributeInt(
@@ -150,11 +153,9 @@ class FoodFormActivity : AppCompatActivity() {
                 else -> {
                 }
             }
-            
+
             var rotatedBitmap = Bitmap.createBitmap(takenImage, 0, 0, takenImage.width, takenImage.height, matrix, true);
             binding.imgView.setImageBitmap(rotatedBitmap)
-        }else {
-            super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
@@ -166,7 +167,6 @@ class FoodFormActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         verifyPermissions()
     }
-
 
     private fun dispatchTakePictureIntent() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
@@ -187,7 +187,8 @@ class FoodFormActivity : AppCompatActivity() {
                         it
                     )
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE)
+
+                    resultLauncher.launch(takePictureIntent)
                 }
             }
         }
