@@ -184,7 +184,7 @@ class MainActivity : AppCompatActivity(){
                 animation.showOut(binding.fabExercise)
                 animation.showOut(binding.fabDevices)
                 animation.showOut(binding.fabFitData)
-                animation.showIn(binding.fabFood)
+                animation.showOut(binding.fabFood)
             }
         })
 
