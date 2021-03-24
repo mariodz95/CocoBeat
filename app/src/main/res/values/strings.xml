@@ -26,4 +26,12 @@
     <string name="history">History</string>
     <string name="setting">Settings</string>
     <string name="food">Food</string>
+
+    <string-array name="history_item_type">
+        <item>All</item>
+        <item>Reading</item>
+        <item>Exercise</item>
+        <item>Step</item>
+        <item>Food</item>
+    </string-array>
 </resources>

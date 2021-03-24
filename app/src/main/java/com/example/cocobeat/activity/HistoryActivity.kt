@@ -1,6 +1,10 @@
 package com.example.cocobeat.activity
 
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +22,7 @@ import org.koin.android.ext.android.inject
 import java.text.SimpleDateFormat
 import java.util.*
 
-class HistoryActivity : AppCompatActivity() {
+class HistoryActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener{
     private lateinit var binding: ActivityHistoryBinding
 
     private lateinit var readingViewModel: ReadingViewModel
@@ -58,6 +62,17 @@ class HistoryActivity : AppCompatActivity() {
         readingViewModel.getReadings()
         exerciseViewModel.getAllExercises()
 
+        binding.typeSpinner.onItemSelectedListener = this
+
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.history_item_type,
+            android.R.layout.simple_spinner_item
+        ).also{adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            binding.typeSpinner.adapter = adapter
+        }
+
         readingViewModel.readings?.observe(this@HistoryActivity, androidx.lifecycle.Observer {
             if (it.isNotEmpty()) {
                 for (reading in it) {
@@ -70,7 +85,7 @@ class HistoryActivity : AppCompatActivity() {
                     historyItems?.add(item)
                 }
             }
-            populateAdapter()
+            populateAdapter("")
         })
 
         exerciseViewModel.exercises?.observe(this@HistoryActivity, androidx.lifecycle.Observer {
@@ -85,7 +100,7 @@ class HistoryActivity : AppCompatActivity() {
                     historyItems?.add(item)
                 }
             }
-            populateAdapter()
+            populateAdapter("")
         })
 
         stepViewModel.allStepData?.observe(this, androidx.lifecycle.Observer {
@@ -100,7 +115,7 @@ class HistoryActivity : AppCompatActivity() {
                     )
                     historyItems?.add(item)
                 }
-                populateAdapter()
+                populateAdapter("")
             }
         })
 
@@ -110,20 +125,33 @@ class HistoryActivity : AppCompatActivity() {
                     val item: HistoryItem = HistoryItem(HistoryItemType.FOOD, food.dateAdded, "${food.foodName} ${food.calories}", null)
                     historyItems?.add(item)
                 }
-                populateAdapter()
+                populateAdapter("")
             }
         })
 
     }
 
-    private fun populateAdapter()
+    private fun populateAdapter(type: String)
     {
-        val orderedArray: List<HistoryItem> =
+        var orderedArray: List<HistoryItem>? = null
+
+        orderedArray = if(type != "All"){
+            historyItems.filter { item -> item.type.toString() == type.toUpperCase() }.sortedByDescending { item -> item.date }
+        }else {
             historyItems.sortedByDescending { item -> item.date }
+        }
 
         binding.historyRecyclerView.apply {
             layoutManager = LinearLayoutManager(this@HistoryActivity)
             adapter = HistoryAdapter(orderedArray)
         }
+    }
+
+    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        val type = parent?.getItemAtPosition(position)
+        populateAdapter(type.toString())
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {
     }
 }

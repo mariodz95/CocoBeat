@@ -6,9 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".activity.HistoryActivity">
 
+    <Spinner
+        android:id="@+id/type_spinner"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/history_recycler_view"
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/type_spinner"
+        tools:layout_editor_absoluteX="-46dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

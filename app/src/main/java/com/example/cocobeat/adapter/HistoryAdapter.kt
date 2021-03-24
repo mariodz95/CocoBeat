@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat
 
 
 class HistoryAdapter(
-    private val historyItems: List<HistoryItem>
+    private val historyItems: List<HistoryItem>?
 ) : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
     private var _binding: HistoryRowLayoutBinding? = null
 
@@ -39,12 +39,12 @@ class HistoryAdapter(
 
     //this method is binding the data on the list
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bindItems(historyItems[position])
+        holder.bindItems(historyItems!![position])
     }
 
     //this method is giving the size of the list
     override fun getItemCount(): Int {
-        return historyItems.size
+        return historyItems!!.size
     }
 
     //the class is holding the list view
