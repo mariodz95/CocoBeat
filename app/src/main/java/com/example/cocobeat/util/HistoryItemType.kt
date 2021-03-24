@@ -1,6 +1,6 @@
 package com.example.cocobeat.util
 
 enum class HistoryItemType {
-    READING, EXERCISE
+    READING, EXERCISE, STEP, FOOD
 }
 

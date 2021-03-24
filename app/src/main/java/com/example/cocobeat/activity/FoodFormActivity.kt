@@ -36,11 +36,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-private const val REQUEST_IMAGE_CAPTURE = 1
 private const val REQUEST_CODE = 1
-private const val FILE_NAME = "photo.jpg"
-
-
 
 class FoodFormActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFoodFormBinding
@@ -136,8 +132,6 @@ class FoodFormActivity : AppCompatActivity() {
     var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             // There are no request codes
-            val data: Intent? = result.data
-            Log.v("test", "data $data")
             val takenImage = BitmapFactory.decodeFile(currentPhotoPath)
             val exif = ExifInterface(currentPhotoPath!!)
             val orientation: Int = exif.getAttributeInt(

@@ -18,4 +18,7 @@ interface StepDao {
 
     @Query("SELECT * FROM step WHERE date_started >= DateTime(:startDate) AND date_ended <= DateTime(:endDate)")
     fun getMonthSteps(startDate: String, endDate: String) : LiveData<List<Step>>
+
+    @Query("SELECT * FROM step")
+    fun getAllStepData() : LiveData<List<Step>>
 }

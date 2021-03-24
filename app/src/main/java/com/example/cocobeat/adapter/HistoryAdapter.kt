@@ -51,17 +51,30 @@ class HistoryAdapter(
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         fun bindItems(historyItem: HistoryItem) {
             val format = SimpleDateFormat("MMMM d, yyyy")
-            if (historyItem.type == HistoryItemType.READING) {
-                _binding?.imageView?.setBackgroundResource(R.drawable.ic_baseline_bloodtype_24)
-                _binding?.txtName?.text = "${BigDecimal(historyItem.value!!).setScale(
-                    2,
-                    RoundingMode.HALF_EVEN
-                )} ${historyItem.unit}"
-                _binding?.txtDate?.text = "${format.format(historyItem.date)}"
-            } else if (historyItem.type == HistoryItemType.EXERCISE) {
-                _binding?.imageView?.setBackgroundResource(R.drawable.ic_baseline_directions_run_24)
-                _binding?.txtName?.text = "${historyItem.value} ${historyItem.unit}"
-                _binding?.txtDate?.text = "${format.format(historyItem.date)}"
+            when (historyItem.type) {
+                HistoryItemType.READING -> {
+                    _binding?.imageView?.setBackgroundResource(R.drawable.ic_baseline_bloodtype_24)
+                    _binding?.txtName?.text = "${BigDecimal(historyItem.value!!).setScale(
+                        2,
+                        RoundingMode.HALF_EVEN
+                    )} ${historyItem.unit}"
+                    _binding?.txtDate?.text = format.format(historyItem.date)
+                }
+                HistoryItemType.EXERCISE -> {
+                    _binding?.imageView?.setBackgroundResource(R.drawable.ic_baseline_directions_run_24)
+                    _binding?.txtName?.text = "${historyItem.value} ${historyItem.unit}"
+                    _binding?.txtDate?.text = format.format(historyItem.date)
+                }
+                HistoryItemType.STEP -> {
+                    _binding?.imageView?.setBackgroundResource(R.drawable.footstep)
+                    _binding?.txtName?.text = historyItem.value
+                    _binding?.txtDate?.text = format.format(historyItem.date)
+                }
+                HistoryItemType.FOOD -> {
+                    _binding?.imageView?.setBackgroundResource(R.drawable.ic_baseline_fastfood_24)
+                    _binding?.txtName?.text = historyItem.value
+                    _binding?.txtDate?.text = format.format(historyItem.date)
+                }
             }
         }
     }

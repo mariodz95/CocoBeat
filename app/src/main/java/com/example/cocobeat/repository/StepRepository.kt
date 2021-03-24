@@ -8,6 +8,7 @@ import java.util.*
 class StepRepository(private val stepDao: StepDao){
     var lastStep: LiveData<Step> = stepDao.getLastStep()
     var monthSteps: LiveData<List<Step>>? = null
+    var allStepData: LiveData<List<Step>>? = stepDao.getAllStepData()
 
     fun insertSteps(steps: MutableList<Step>){
         stepDao.insertSteps(steps)
